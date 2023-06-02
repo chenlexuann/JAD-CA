@@ -1,12 +1,16 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>header</title>
 </head>
-<body>
-
+<body>	
+<!-- ===========================================================
+Author: Chen Lexuan (2212562)
+Date: 24/5/2023
+Description: header
+============================================================= -->
+	<h2 align="center">----------- SP bookstore. ------------</h2>
+	<hr align="center" size="1" noshade="noshade">
 </body>
 </html>
