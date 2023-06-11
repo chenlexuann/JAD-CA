@@ -30,7 +30,8 @@
 <body>
 	<%
 	//init variables
-	String message = request.getParameter("errCode");
+	String message = request.getParameter("statusCode");
+	
 
 	//out.print (message);
 	if (message != null && message.equals("inva1idLogin")) {

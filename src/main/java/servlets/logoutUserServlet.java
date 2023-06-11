@@ -29,10 +29,6 @@ public class logoutUserServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		javax.servlet.http.HttpSession session = request.getSession(false);
-		if (session != null) {
-			session.invalidate();
-		}
 
 		// Redirect the user to the login page
 		response.sendRedirect(request.getContextPath() + "/login.jsp?statusCode=loggedOut");

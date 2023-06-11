@@ -1,5 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
+<%@ page import="java.util.List"%>
+<%@ page import="java.util.ArrayList"%>
+<%@ page import="books.Book"%>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -9,12 +13,21 @@
 	href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
 	integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk"
 	crossorigin="anonymous">
-
 <title>home</title>
 <script>
-	$(document).ready(function() { //This is to prevent any jQuery code from running before the document is finished loading (is ready). alternative: $(document).ready(function()
-<%String message = request.getParameter("statusCode");%>
-	loginVerify();
+document.addEventListener("DOMContentLoaded", function() {
+window.location.href = '<%=request.getContextPath()%>
+	/getBooksServlet'
+	});
+	$(document)
+			.ready(
+					function() {
+<%String role = session.getAttribute("sessUserRole") + "";
+String message = request.getParameter("statusCode");
+boolean TF = false;
+if (role != null && role.equals("adminUser")) {
+	TF = true;
+}%>
 	})
 </script>
 <style>
@@ -32,6 +45,7 @@
 </style>
 </head>
 <body>
+
 	<nav class="navbar navbar-expand-lg navbar-light bg-light">
 		<a class="navbar-brand" href="home.jsp"> <img
 			src="./img/kittyLogo.png" width="auto" height="50" alt="kitty books">
@@ -46,14 +60,11 @@
 				<li class="nav-item">
 					<div class="mx-2">
 						<%
-						if (message != null && message.equals("validLogin")) {
+						if (TF) {
 						%>
-						<a href="login.jsp" class="btn btn-danger mr-2" id="Logout">Log
-							Out</a>
 						<form action='<%=request.getContextPath()%>/logoutUserServlet'
-							class=logoutForm>
-							<button type="submit" class="btn btn-secondary mr-2"
-								id="btnLogin">Logout</button>
+							class=logoutForm id="Logout">
+							<button type="submit" class="btn btn-danger mr-2">Logout</button>
 						</form>
 						<%
 						} else {
@@ -67,10 +78,14 @@
 				</li>
 				<li class="nav-item"><a class="nav-link active mx-2"
 					aria-current="page" href="home.jsp">Home</a></li>
+				<%
+				if (TF) {
+				%>
 				<li class="nav-item"><a class="nav-link mx-2"
 					aria-current="page" href="admin.jsp" id="Admin">Admin</a></li>
-				<li class="nav-item"><a class="nav-link mx-2"
-					aria-current="page" href="AddDVD.html" id="AddDVD">DVD</a></li>
+				<%
+				}
+				%>
 			</ul>
 		</div>
 	</nav>
@@ -78,26 +93,42 @@
 		<div class="center-image">
 			<img src="./img/kittyLogo.png" alt="Kitty books">
 		</div>
-		<div class="row">
-			<div class="col-6">
-				<label for="basic-url" class="form-label">Max Price</label>
-				<div class="input-group mb-3">
-					<input type="text" class="form-control" id="PriceInput"
-						aria-describedby="basic-addon3" placeholder="Type here">
+		<form action="<%=request.getContextPath()%>/searchBooksServlet"
+			method="GET">
+			<div class="row">
+				<div class="col-6">
+					<label for="PriceInput" class="form-label">Max Price</label>
+					<div class="input-group mb-3">
+						<input type="text" class="form-control" id="PriceInput"
+							name="maxPrice" placeholder="Type here">
+					</div>
+				</div>
+				<div class="col-6">
+					<label for="category" class="form-label">Category</label>
+					<div class="input-group mb-3">
+						<select class="custom-select form-control" id="genre" name="genre">
+							<option value="0" selected>None Selected</option>
+							<%
+							List<String> genres = (List<String>) session.getAttribute("genres");
+							List<Integer> genre_id = (List<Integer>) session.getAttribute("genre_ID");
+							if (genre_id != null && genres != null) {
+								for (int i = 0; i < genres.size(); i++) {
+									String genre = genres.get(i);
+									int genreId = genre_id.get(i);
+							%>
+							<option value="<%=genreId%>"><%=genre%></option>
+							<%
+							}
+							}
+							%>
+						</select>
+					</div>
 				</div>
 			</div>
-			<div class="col-6">
-				<label for="basic-url" class="form-label">Category</label>
-				<div class="input-group mb-3">
-					<select class="custom-select form-control" id="category">
-						<option value="0" selected>None Selected</option>
-					</select>
-				</div>
+			<div class="d-flex justify-content-end my-2">
+				<button type="submit" class="btn btn-primary">Search</button>
 			</div>
-		</div>
-		<div class="d-flex justify-content-end my-2">
-			<a href="#"><button class="btn btn-primary" id="Search">Search</button></a>
-		</div>
+		</form>
 		<div class="row mt-4">
 			<div class="col-12">
 				<input type="text" class="form-control"
@@ -110,7 +141,41 @@
 	</div>
 	<div>
 		<div class="container">
-			<div class="row justify-content-center" id="Movies"></div>
+			<div class="row justify-content-center" id="books">
+				<%
+				List<Book> books = (List<Book>) request.getAttribute("books");
+
+				if (books != null) {
+					for (Book book : books) {
+				%>
+				<div class="col-lg-6 col-md-12" id="<%=book.getBookId()%>"
+					onClick="reply_click(this.id)">
+					<div class="card border-primary mb-3">
+						<div class="card-header">
+							<h3><%=book.getTitle()%></h3>
+						</div>
+						<div class="card-body">
+							<div class="row">
+								<div class="col-md-6">
+									<h5>
+										Price:
+										<%=book.getPrice()%></h5>
+								</div>
+								<div class="col-md-6">
+									<h5>
+										Quantity:
+										<%=book.getQuantity()%></h5>
+								</div>
+							</div>
+							<!-- Display other book details as needed -->
+						</div>
+					</div>
+				</div>
+				<%
+				}
+				}
+				%>
+			</div>
 		</div>
 	</div>
 </body>
