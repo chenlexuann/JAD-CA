@@ -1,7 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
-<%@ page import="java.util.List"%>
-<%@ page import="java.util.ArrayList"%>
+<%@ page import="java.util.*"%>
 <%@ page import="books.Book"%>
 
 <!DOCTYPE html>
@@ -15,13 +14,18 @@
 	crossorigin="anonymous">
 <title>home</title>
 <script>
-document.addEventListener("DOMContentLoaded", function() {
-window.location.href = '<%=request.getContextPath()%>
-	/getBooksServlet'
-	});
-	$(document)
-			.ready(
-					function() {
+function reply_click(clicked_id) {
+    session.setAttribute('book_id', clicked_id);
+    window.location.assign("bookDetails.jsp");
+}
+
+	$(document).ready(function() {
+		if(request.getParameter("redirect").equals("false")){
+			
+		} else {
+			window.location.href = "<%=request.getContextPath()%>
+	/getBooksServlet";
+						}
 <%String role = session.getAttribute("sessUserRole") + "";
 String message = request.getParameter("statusCode");
 boolean TF = false;
@@ -45,7 +49,6 @@ if (role != null && role.equals("adminUser")) {
 </style>
 </head>
 <body>
-
 	<nav class="navbar navbar-expand-lg navbar-light bg-light">
 		<a class="navbar-brand" href="home.jsp"> <img
 			src="./img/kittyLogo.png" width="auto" height="50" alt="kitty books">
@@ -125,19 +128,17 @@ if (role != null && role.equals("adminUser")) {
 					</div>
 				</div>
 			</div>
+			<div class="row mt-4">
+				<div class="col-12">
+					<input type="text" class="form-control"
+						placeholder="Search for Title" name="searchTitle" id="TitleInput">
+				</div>
+			</div>
 			<div class="d-flex justify-content-end my-2">
 				<button type="submit" class="btn btn-primary">Search</button>
 			</div>
 		</form>
-		<div class="row mt-4">
-			<div class="col-12">
-				<input type="text" class="form-control"
-					placeholder="Search for Title" id="TitleInput">
-			</div>
-		</div>
-		<div class="d-flex justify-content-end my-2">
-			<a href="#"><button class="btn btn-primary" id="SearchTitle">Search</button></a>
-		</div>
+		
 	</div>
 	<div>
 		<div class="container">
@@ -149,7 +150,7 @@ if (role != null && role.equals("adminUser")) {
 					for (Book book : books) {
 				%>
 				<div class="col-lg-6 col-md-12" id="<%=book.getBookId()%>"
-					onClick="reply_click(this.id)">
+					onClick="window.location.href = 'bookDetails.jsp?bookId=<%=book.getBookId()%>'">
 					<div class="card border-primary mb-3">
 						<div class="card-header">
 							<h3><%=book.getTitle()%></h3>
@@ -183,6 +184,5 @@ if (role != null && role.equals("adminUser")) {
 <script
 	src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
 
-<script src="./JS/functions.js"></script>
 </body>
 </html>

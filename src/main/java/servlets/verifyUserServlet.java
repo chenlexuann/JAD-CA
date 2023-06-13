@@ -24,6 +24,8 @@ public class verifyUserServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private String username = "";
 	private String password = "";
+	private String username2 = "";
+	private String password2 = "";
 	private String email = "";
 	private String pwd = "";
 
@@ -61,7 +63,6 @@ public class verifyUserServlet extends HttpServlet {
 			// Step 5: Execute SQL Command
 			String sqlStr = "SELECT * FROM bookstore.admin WHERE email=? AND password=?;";
 			PreparedStatement pstmt = conn.prepareStatement(sqlStr);
-			// using prepared statement
 
 			pstmt.setString(1, email);
 			pstmt.setString(2, pwd);
@@ -74,6 +75,22 @@ public class verifyUserServlet extends HttpServlet {
 				username = rs.getString("email");
 			}
 
+			// second statement to check if member or admin
+			String sqlStr2 = "SELECT * FROM bookstore.members where email = ? AND password = ?;";
+			PreparedStatement pstmt2 = conn.prepareStatement(sqlStr2);
+			// using prepared statement
+			pstmt2.setString(1, email);
+			pstmt2.setString(2, pwd);
+
+			ResultSet rs2 = pstmt2.executeQuery();
+
+			// Step 6: Process Result
+			while (rs2.next()) {
+				password2 = rs2.getString("password");
+				username2 = rs2.getString("email");
+				System.out.println(password2);
+				System.out.println(username2);
+			}
 			// Step 7: Close connection
 			conn.close();
 		} catch (Exception e) {
@@ -81,8 +98,15 @@ public class verifyUserServlet extends HttpServlet {
 			out.println("Error :" + e);
 			out.close();
 		}
+
 		if (username.equals(email) && password.equals(pwd)) {
 			String userRole = "adminUser";
+			session.setAttribute("sessUserRole", userRole);
+			session.setAttribute("sessUserID", email);
+			
+			response.sendRedirect("home.jsp?role=" + userRole + "&user=" + email + "&statusCode=validLogin");
+		} else if (username2.equals(email) && password.equals(pwd)) {
+			String userRole = "memberUser";
 			session.setAttribute("sessUserRole", userRole);
 			session.setAttribute("sessUserID", email);
 			/*
@@ -90,7 +114,6 @@ public class verifyUserServlet extends HttpServlet {
 			 * user);
 			 */
 			response.sendRedirect("home.jsp?role=" + userRole + "&user=" + email + "&statusCode=validLogin");
-
 		} else {
 			response.sendRedirect("login.jsp?statusCode=invalidLogin");
 		}

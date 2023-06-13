@@ -2,7 +2,6 @@ package servlets;
 
 import java.io.*;
 import java.sql.*;
-import javax.servlet.RequestDispatcher;
 import java.util.ArrayList;
 import java.util.List;
 import java.io.IOException;

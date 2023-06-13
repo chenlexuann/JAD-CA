@@ -1,39 +1,20 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
+<%@ page import="java.util.*"%>
+<%@ page import="books.Book"%>
+
 <!DOCTYPE html>
-<html lang="en">
-<!-- //Chen Lexuan
-//DIT/FT/1B/02
-//p2212562 -->
+<html>
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- Bootstrap CSS -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <link rel="stylesheet"
 	href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
 	integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk"
 	crossorigin="anonymous">
-<script
-	src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"
-	integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI"
-	crossorigin="anonymous"></script>
-<link rel="stylesheet"
-	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-<Title>Admin</Title>
-<script
-	src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<title>home</title>
 <script>
-function reply_click(clicked_id) {
-    session.setAttribute('book_id', clicked_id);
-    window.location.assign("bookDetails.jsp");
-}
-
 	$(document).ready(function() {
-		if(request.getParameter("redirect").equals("false")){
-			
-		} else {
-			window.location.href = "<%=request.getContextPath()%>/getBooksServlet";	
-		}
 <%String role = session.getAttribute("sessUserRole") + "";
 String message = request.getParameter("statusCode");
 boolean TF = false;
@@ -42,8 +23,20 @@ if (role != null && role.equals("adminUser")) {
 }%>
 	})
 </script>
-</head>
+<style>
+.center-image {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
 
+.center-image img {
+	max-width: 100%;
+	max-height: 30vh;
+	object-fit: contain;
+}
+</style>
+</head>
 <body>
 	<nav class="navbar navbar-expand-lg navbar-light bg-light">
 		<a class="navbar-brand" href="home.jsp"> <img
@@ -89,6 +82,9 @@ if (role != null && role.equals("adminUser")) {
 		</div>
 	</nav>
 	
-	
+</body>
+<!-- Bootstrap JS -->
+<script
+	src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
