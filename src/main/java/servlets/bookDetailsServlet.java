@@ -16,7 +16,6 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import books.Book;
 
@@ -42,9 +41,6 @@ public class bookDetailsServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
         String bookId = request.getParameter("bookId");
-		HttpSession session = request.getSession();
-		List<String> genres = new ArrayList<>();
-		List<Integer> genre_ID = new ArrayList<>();
 		try {
 			// Step1: Load JDBC Driver
 			Class.forName("com.mysql.cj.jdbc.Driver");

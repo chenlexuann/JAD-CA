@@ -21,112 +21,110 @@ import javax.servlet.http.HttpSession;
  */
 @WebServlet("/verifyUserServlet")
 public class verifyUserServlet extends HttpServlet {
-	private static final long serialVersionUID = 1L;
-	private String username = "";
-	private String password = "";
-	private String username2 = "";
-	private String password2 = "";
-	private String email = "";
-	private String pwd = "";
+    private static final long serialVersionUID = 1L;
+    private String username = "";
+    private String password = "";
+    private String firstName = "";
+    private String email = "";
+    private String pwd = "";
 
-	/**
-	 * @see HttpServlet#HttpServlet()
-	 */
-	public verifyUserServlet() {
-		super();
-		// TODO Auto-generated constructor stub
-	}
+    /**
+     * @see HttpServlet#HttpServlet()
+     */
+    public verifyUserServlet() {
+        super();
+        // TODO Auto-generated constructor stub
+    }
 
-	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
-	 *      response)
-	 */
-	protected void doGet(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		HttpSession session = request.getSession();
-		email = request.getParameter("email");
-		pwd = request.getParameter("pwd");
-		try {
-			// Step1: Load JDBC Driver
-			Class.forName("com.mysql.cj.jdbc.Driver");
+    /**
+     * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
+     *      response)
+     */
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        // TODO Auto-generated method stub
+        HttpSession session = request.getSession();
+        email = request.getParameter("email");
+        pwd = request.getParameter("pwd");
+        try {
+            // Step1: Load JDBC Driver
+            Class.forName("com.mysql.cj.jdbc.Driver");
 
-			// Step 2: Define Connection URL
-			String connURL = "jdbc:mysql://localhost/bookstore?user=root&password=root&serverTimezone=UTC";
+            // Step 2: Define Connection URL
+            String connURL = "jdbc:mysql://localhost/bookstore?user=root&password=root&serverTimezone=UTC";
 
-			// Step 3: Establish connection to URL
-			Connection conn = DriverManager.getConnection(connURL);
+            // Step 3: Establish connection to URL
+            Connection conn = DriverManager.getConnection(connURL);
 
-			// Step 4: Create Statement object
-			// Statement stmt = conn.createStatement();
+            // Step 4: Create Statement object
+            // Statement stmt = conn.createStatement();
 
-			// Step 5: Execute SQL Command
-			String sqlStr = "SELECT * FROM bookstore.admin WHERE email=? AND password=?;";
-			PreparedStatement pstmt = conn.prepareStatement(sqlStr);
+            // Step 5: Execute SQL Command for admin login
+            String adminSqlStr = "SELECT * FROM bookstore.admin WHERE email=? AND password=?;";
+            PreparedStatement adminPstmt = conn.prepareStatement(adminSqlStr);
 
-			pstmt.setString(1, email);
-			pstmt.setString(2, pwd);
+            adminPstmt.setString(1, email);
+            adminPstmt.setString(2, pwd);
 
-			ResultSet rs = pstmt.executeQuery();
+            ResultSet adminRs = adminPstmt.executeQuery();
 
-			// Step 6: Process Result
-			while (rs.next()) {
-				password = rs.getString("password");
-				username = rs.getString("email");
-			}
+            // Step 6: Process Result for admin login
+            if (adminRs.next()) {
+                password = adminRs.getString("password");
+                username = adminRs.getString("email");
+                firstName = adminRs.getString("first_name");
 
-			// second statement to check if member or admin
-			String sqlStr2 = "SELECT * FROM bookstore.members where email = ? AND password = ?;";
-			PreparedStatement pstmt2 = conn.prepareStatement(sqlStr2);
-			// using prepared statement
-			pstmt2.setString(1, email);
-			pstmt2.setString(2, pwd);
+                String userRole = "adminUser";
+                session.setAttribute("sessUserRole", userRole);
+                session.setAttribute("sessUserID", email);
 
-			ResultSet rs2 = pstmt2.executeQuery();
+                response.sendRedirect("admin.jsp?role=" + userRole + "&user=" + email + "&statusCode=validLogin");
+                return; // Exit the method after redirecting
+            }
 
-			// Step 6: Process Result
-			while (rs2.next()) {
-				password2 = rs2.getString("password");
-				username2 = rs2.getString("email");
-				System.out.println(password2);
-				System.out.println(username2);
-			}
-			// Step 7: Close connection
-			conn.close();
-		} catch (Exception e) {
-			PrintWriter out = response.getWriter();
-			out.println("Error :" + e);
-			out.close();
-		}
+            // Step 7: Execute SQL Command for member login
+            String memberSqlStr = "SELECT * FROM bookstore.members WHERE email=? AND password=?;";
+            PreparedStatement memberPstmt = conn.prepareStatement(memberSqlStr);
 
-		if (username.equals(email) && password.equals(pwd)) {
-			String userRole = "adminUser";
-			session.setAttribute("sessUserRole", userRole);
-			session.setAttribute("sessUserID", email);
-			
-			response.sendRedirect("home.jsp?role=" + userRole + "&user=" + email + "&statusCode=validLogin");
-		} else if (username2.equals(email) && password.equals(pwd)) {
-			String userRole = "memberUser";
-			session.setAttribute("sessUserRole", userRole);
-			session.setAttribute("sessUserID", email);
-			/*
-			 * response.sendRedirect("displayMember.jsp?role=" + userRole + "&user=" +
-			 * user);
-			 */
-			response.sendRedirect("home.jsp?role=" + userRole + "&user=" + email + "&statusCode=validLogin");
-		} else {
-			response.sendRedirect("login.jsp?statusCode=invalidLogin");
-		}
-	}
+            memberPstmt.setString(1, email);
+            memberPstmt.setString(2, pwd);
 
-	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
-	 *      response)
-	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		doGet(request, response);
-	}
+            ResultSet memberRs = memberPstmt.executeQuery();
+
+            // Step 8: Process Result for member login
+            if (memberRs.next()) {
+                password = memberRs.getString("password");
+                username = memberRs.getString("email");
+                firstName = memberRs.getString("first_name");
+
+                String userRole = "memberUser";
+                session.setAttribute("sessUserRole", userRole);
+                session.setAttribute("sessUserID", email);
+
+                response.sendRedirect("home.jsp?role=" + userRole + "&user=" + email + "&statusCode=validLogin");
+                return; // Exit the method after redirecting
+            }
+
+            // Step 9: Close connection
+            conn.close();
+        } catch (Exception e) {
+            PrintWriter out = response.getWriter();
+            out.println("Error: " + e);
+            out.close();
+        }
+
+        // If no matching admin or member found, redirect to login page with an invalid login status
+        response.sendRedirect("login.jsp?statusCode=invalidLogin");
+    }
+
+    /**
+     * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
+     *      response)
+     */
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        // TODO Auto-generated method stub
+        doGet(request, response);
+    }
 
 }

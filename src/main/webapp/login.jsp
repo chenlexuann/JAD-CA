@@ -28,19 +28,6 @@
 </style>
 </head>
 <body>
-	<%
-	//init variables
-	String message = request.getParameter("statusCode");
-	
-
-	//out.print (message);
-	if (message != null && message.equals("inva1idLogin")) {
-		//if (message. equals("inva1idLogin")){ //cannot work.. null pointer exception
-		out.print("Sorry, error in login.. <br><h2>P1ease try again!</h2>");
-	}
-	%>
-
-
 	<div class="login-form">
 		<div class="center-image">
 			<img src="./img/kittyLogo.png" alt="Kitty books">
@@ -62,10 +49,20 @@
 			</div>
 			<div class="clearfix">
 				<a href="register_member.jsp" class="pull-left">Sign up</a> <a
-					href="home.jsp" class="pull-right">Use as Guest</a>
+					href="<%=request.getContextPath()%>/logoutUserServlet"
+					class="pull-right">Use as Guest</a>
 			</div>
 
 		</form>
 	</div>
 </body>
+<script>
+<%//init variables
+String message = request.getParameter("statusCode");
+
+//out.print (message);
+if (message != null && message.equals("invalidLogin")) {%>
+	alert("Wrong email or password!");
+<%}%>
+</script>
 </html>

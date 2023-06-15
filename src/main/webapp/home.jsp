@@ -14,23 +14,26 @@
 	crossorigin="anonymous">
 <title>home</title>
 <script>
-function reply_click(clicked_id) {
-    session.setAttribute('book_id', clicked_id);
-    window.location.assign("bookDetails.jsp");
-}
+	function reply_click(clicked_id) {
+		session.setAttribute('book_id', clicked_id);
+		window.location.assign("bookDetails.jsp");
+	}
 
-	$(document).ready(function() {
-		if(request.getParameter("redirect").equals("false")){
-			
-		} else {
-			window.location.href = "<%=request.getContextPath()%>
-	/getBooksServlet";
+	$(document)
+			.ready(
+					function() {
+						if (request.getParameter("redirect").equals("false")) {
+
 						}
 <%String role = session.getAttribute("sessUserRole") + "";
 String message = request.getParameter("statusCode");
-boolean TF = false;
+boolean admin = false;
+boolean loggedIn = false;
 if (role != null && role.equals("adminUser")) {
-	TF = true;
+	admin = true;
+}
+if (role != null && role.equals("memberUser") || role.equals("adminUser")) {
+	loggedIn = true;
 }%>
 	})
 </script>
@@ -63,7 +66,7 @@ if (role != null && role.equals("adminUser")) {
 				<li class="nav-item">
 					<div class="mx-2">
 						<%
-						if (TF) {
+						if (loggedIn) {
 						%>
 						<form action='<%=request.getContextPath()%>/logoutUserServlet'
 							class=logoutForm id="Logout">
@@ -82,13 +85,18 @@ if (role != null && role.equals("adminUser")) {
 				<li class="nav-item"><a class="nav-link active mx-2"
 					aria-current="page" href="home.jsp">Home</a></li>
 				<%
-				if (TF) {
+				if (admin) {
 				%>
 				<li class="nav-item"><a class="nav-link mx-2"
 					aria-current="page" href="admin.jsp" id="Admin">Admin</a></li>
 				<%
 				}
 				%>
+			</ul>
+			<ul class="navbar-nav ml-auto">
+				<li class="nav-item"><a class="nav-link mx-2" href="cart.jsp">
+						<i class="fas fa-shopping-cart"></i> Cart
+				</a></li>
 			</ul>
 		</div>
 	</nav>
@@ -138,7 +146,7 @@ if (role != null && role.equals("adminUser")) {
 				<button type="submit" class="btn btn-primary">Search</button>
 			</div>
 		</form>
-		
+
 	</div>
 	<div>
 		<div class="container">
@@ -150,7 +158,7 @@ if (role != null && role.equals("adminUser")) {
 					for (Book book : books) {
 				%>
 				<div class="col-lg-6 col-md-12" id="<%=book.getBookId()%>"
-					onClick="window.location.href = 'bookDetails.jsp?bookId=<%=book.getBookId()%>'">
+					onClick="window.location.href = 'bookDetailsServlet?bookId=<%=book.getBookId()%>'">
 					<div class="card border-primary mb-3">
 						<div class="card-header">
 							<h3><%=book.getTitle()%></h3>

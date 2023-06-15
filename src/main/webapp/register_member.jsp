@@ -5,15 +5,25 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Register Member</title>
 <link rel="stylesheet"
 	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-<link href="./css/login.css" rel="stylesheet" />
-<script
-	src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-<script
-	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-<title>login</title>
 <style>
+body {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	height: 80vh;
+}
+
+.registration-form {
+	max-width: 400px;
+	padding: 20px;
+	border: 1px solid #ccc;
+	border-radius: 4px;
+	background-color: #fff;
+}
+
 .center-image {
 	display: flex;
 	justify-content: center;
@@ -28,42 +38,48 @@
 </style>
 </head>
 <body>
-	<%
-	//init variables
-	String message = request.getParameter("statusCode");
-	
-
-	//out.print (message);
-	if (message != null && message.equals("inva1idLogin")) {
-		//if (message. equals("inva1idLogin")){ //cannot work.. null pointer exception
-		out.print("Sorry, error in login.. <br><h2>P1ease try again!</h2>");
-	}
-	%>
-
-
-	<div class="login-form">
+	<div class="registration-form">
 		<div class="center-image">
 			<img src="./img/kittyLogo.png" alt="Kitty books">
 		</div>
-		<form action="<%=request.getContextPath()%>/verifyUserServlet"
+		<h2 class="text-center">Register Member</h2>
+		<form action="<%=request.getContextPath()%>/createUserServlet"
 			method="post">
-			<h2 class="text-center">Sign up</h2>
 			<div class="form-group">
-				<input type="text" class="form-control" name="email"
-					placeholder="Email address" required="required">
+				<label for="firstName">First Name:</label> <input type="text"
+					class="form-control" id="firstName" name="firstName" required>
 			</div>
 			<div class="form-group">
-				<input type="password" class="form-control" name="pwd"
-					placeholder="Password" required="required">
+				<label for="lastName">Last Name:</label> <input type="text"
+					class="form-control" id="lastName" name="lastName" required>
 			</div>
 			<div class="form-group">
-				<button type="submit" class="btn btn-primary btn-block" id="Signup">sign up</button>
+				<label for="email">Email:</label> <input type="email"
+					class="form-control" id="email" name="email" required>
 			</div>
+			<div class="form-group">
+				<label for="password">Password:</label> <input type="password"
+					class="form-control" id="password" name="password" required>
+			</div>
+			<button type="submit" class="btn btn-primary btn-block">Register</button>
 			<div class="clearfix">
-				<a href="home.jsp" class="pull-left">back</a>
+				<a href="<%=request.getContextPath()%>/logoutUserServlet"
+					class="pull-right">Cancel</a>
 			</div>
-
 		</form>
 	</div>
 </body>
+<script>
+	
+<%//init variables
+String message = request.getParameter("statusCode");
+
+//out.print (message);
+if (message != null && message.equals("success")) {%>
+	alert("Success!");
+<%} else if (message != null && message.equals("duplicateEmail")) {%>
+	alert("Email already exist!");
+<%}%>
+	
+</script>
 </html>

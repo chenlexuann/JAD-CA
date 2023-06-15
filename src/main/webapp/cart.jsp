@@ -1,25 +1,26 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ page import="java.util.*"%>
-<%@ page import="books.Book"%>
-
 <!DOCTYPE html>
 <html>
 <head>
-<!-- Bootstrap CSS -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <link rel="stylesheet"
 	href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
 	integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk"
 	crossorigin="anonymous">
-<title>home</title>
+<meta charset="UTF-8">
+<title>Cart</title>
 <script>
-	$(document)
-			.ready(
-					function() {
+$(document).ready(function() {
+	if(request.getParameter("redirect").equals("false")){
+		
+	} else {
+		window.location.href = "<%=request.getContextPath()%>
+/getBooksServlet";
+					}
 <%String role = session.getAttribute("sessUserRole") + "";
 String message = request.getParameter("statusCode");
-
 boolean admin = false;
 boolean loggedIn = false;
 if (role != null && role.equals("adminUser")) {
@@ -28,23 +29,7 @@ if (role != null && role.equals("adminUser")) {
 if (role != null && role.equals("memberUser") || role.equals("adminUser")) {
 	loggedIn = true;
 }%>
-	
-<%Book book = (Book) request.getAttribute("bookDetail");%>
-	})
-</script>
-<style>
-.center-image {
-	display: flex;
-	justify-content: center;
-	align-items: center;
-}
-
-.center-image img {
-	max-width: 100%;
-	max-height: 30vh;
-	object-fit: contain;
-}
-</style>
+})</script>
 </head>
 <body>
 	<nav class="navbar navbar-expand-lg navbar-light bg-light">
@@ -95,61 +80,29 @@ if (role != null && role.equals("memberUser") || role.equals("adminUser")) {
 			</ul>
 		</div>
 	</nav>
-	<div class="m-5">
-		<div class="row">
-			<div class="col-md-4">
-				<img src="<%=book.getImageUrl()%>" class="img-fluid book-cover"
-					id="bookCover" />
-			</div>
-			<div class="col-md-8">
-				<h1 class="text-start" id="bookTitle"><%=book.getTitle()%></h1>
-				<div class="text-start">
-					<h3>
-						<em>Price: </em><span id="bookPrice"><%=book.getPrice()%></span>
-					</h3>
-					<h3>
-						<em>Quantity: </em><span id="bookQuantity"><%=book.getQuantity()%></span>
-					</h3>
-				</div>
-
-				<div class="book-details my-3">
-					<p class="text-justify" id="bookDescription"><%=book.getDescription()%></p>
-					<div class="row">
-						<div class="col-md-6">
-							<p>
-								<strong>ISBN: </strong><span id="bookISBN"><%=book.getISBN()%></span>
-							</p>
-							<p>
-								<strong>Author: </strong><span id="bookAuthorName"><%=book.getAuthorName()%></span>
-							</p>
-							<p>
-								<strong>Publisher: </strong><span id="bookPublisherName"><%=book.getPublisherName()%></span>
-							</p>
-						</div>
-						<div class="col-md-6">
-							<p>
-								<strong>Publication Date: </strong><span
-									id="bookPublicationDate"><%=book.getPublicationDate()%></span>
-							</p>
-							<p>
-								<strong>Genre: </strong><span id="bookGenreName"><%=book.getGenreName()%></span>
-							</p>
-							<p>
-								<strong>Rating: </strong><span id="bookRating"><%=book.getRating()%></span>
-							</p>
-						</div>
-					</div>
-				</div>
-				<div class="text-end">
-					<button class="btn btn-primary" id="addToCartButton">Add
-						to Cart</button>
-				</div>
-			</div>
-		</div>
-	</div>
-</body>
-<!-- Bootstrap JS -->
-<script
-	src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+	<%
+if (role != null && (role.equals("memberUser") || role.equals("adminUser"))) {
+    // Retrieve cart details from session and display the list of books
+    List<String> cartBooks = (List<String>) session.getAttribute("cartBooks");
+    if (cartBooks == null || cartBooks.isEmpty()) {
+        %>
+        <div>No books in the cart.</div>
+        <%
+    } else {
+        %>
+        <div>
+            <h2>Books in the Cart:</h2>
+            <ul>
+                <% for (String book : cartBooks) { %>
+                <li><%= book %></li>
+                <% } %>
+            </ul>
+        </div>
+        <%
+    }
+} else {
+    // Redirected to log in page
+}
+%>
 </body>
 </html>

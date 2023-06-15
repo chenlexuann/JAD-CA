@@ -36,14 +36,14 @@ function reply_click(clicked_id) {
 		}
 <%String role = session.getAttribute("sessUserRole") + "";
 String message = request.getParameter("statusCode");
-boolean TF = false;
+boolean admin = false;
 if (role != null && role.equals("adminUser")) {
-	TF = true;
-}%>
+	admin = true;
+}
+%>
 	})
 </script>
 </head>
-
 <body>
 	<nav class="navbar navbar-expand-lg navbar-light bg-light">
 		<a class="navbar-brand" href="home.jsp"> <img
@@ -59,7 +59,7 @@ if (role != null && role.equals("adminUser")) {
 				<li class="nav-item">
 					<div class="mx-2">
 						<%
-						if (TF) {
+						if (admin) {
 						%>
 						<form action='<%=request.getContextPath()%>/logoutUserServlet'
 							class=logoutForm id="Logout">
@@ -78,7 +78,7 @@ if (role != null && role.equals("adminUser")) {
 				<li class="nav-item"><a class="nav-link active mx-2"
 					aria-current="page" href="home.jsp">Home</a></li>
 				<%
-				if (TF) {
+				if (admin) {
 				%>
 				<li class="nav-item"><a class="nav-link mx-2"
 					aria-current="page" href="admin.jsp" id="Admin">Admin</a></li>
