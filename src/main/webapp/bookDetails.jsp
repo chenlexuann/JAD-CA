@@ -17,19 +17,24 @@
 	$(document)
 			.ready(
 					function() {
+						if (request.getParameter("redirect").equals("false")) {
+
+						}
 <%String role = session.getAttribute("sessUserRole") + "";
 String message = request.getParameter("statusCode");
-
 boolean admin = false;
 boolean loggedIn = false;
+boolean member = false;
 if (role != null && role.equals("adminUser")) {
 	admin = true;
 }
 if (role != null && role.equals("memberUser") || role.equals("adminUser")) {
 	loggedIn = true;
-}%>
-	
-<%Book book = (Book) request.getAttribute("bookDetail");%>
+}
+if (role != null && role.equals("memberUser")) {
+	member = true;
+}
+Book book = (Book) request.getAttribute("bookDetail");%>
 	})
 </script>
 <style>
@@ -85,12 +90,21 @@ if (role != null && role.equals("memberUser") || role.equals("adminUser")) {
 				<li class="nav-item"><a class="nav-link mx-2"
 					aria-current="page" href="CA1/admin/menu.jsp" id="Admin">Admin</a></li>
 				<%
+				} else if (member) {
+				String firstName = (String) session.getAttribute("sessUserName");
+				%>
+				<li class="nav-item"><a class="nav-link mx-2"
+					aria-current="page" href="CA1/member/viewAccount.jsp" id="UserEdit">
+						<%=firstName%>
+				</a></li>
+				<%
 				}
 				%>
 			</ul>
 			<ul class="navbar-nav ml-auto">
-				<li class="nav-item"><a class="nav-link mx-2" href="cart.jsp">
-						<i class="fas fa-shopping-cart"></i> Cart
+				<li class="nav-item"><a class="nav-link mx-2"
+					href="<%=request.getContextPath()%>/getCartServlet"> <i
+						class="fas fa-shopping-cart"></i> Cart
 				</a></li>
 			</ul>
 		</div>
@@ -141,11 +155,21 @@ if (role != null && role.equals("memberUser") || role.equals("adminUser")) {
 					</div>
 				</div>
 				<div class="text-end">
-					<form action="<%=request.getContextPath()%>/add2Cart"
-						method="post">
+					<form action="<%=request.getContextPath()%>/add2Cart" method="post">
 						<input type="hidden" name="bookId" value="<%=book.getBookId()%>">
-						<button type="submit" class="btn btn-primary" id="addToCartButton">Add
-							to Cart</button>
+						<%
+						if (loggedIn) {
+						%><button type="submit" class="btn btn-primary"
+							id="addToCartButton">Add to Cart</button>
+						<%
+						} else {
+						%>
+						<button type="submit" onclick="window.location.href = 'login.jsp'" class="btn btn-primary"
+							id="addToCartButton">Log in to add to cart</button>
+						<%
+						}
+						%>
+
 					</form>
 				</div>
 			</div>

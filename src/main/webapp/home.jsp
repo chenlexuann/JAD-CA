@@ -97,7 +97,7 @@ if(role != null && role.equals("memberUser")) {
 					aria-current="page" href="CA1/admin/menu.jsp" id="Admin">Admin</a></li>
 				<%
 				} else if(member){
-					String firstName = request.getParameter("user");
+					String firstName = (String) session.getAttribute("sessUserName");
 					%>
 					<li class="nav-item">
 					    <a class="nav-link mx-2" aria-current="page" href="CA1/member/viewAccount.jsp" id="UserEdit">
@@ -109,7 +109,7 @@ if(role != null && role.equals("memberUser")) {
 				%>
 			</ul>
 			<ul class="navbar-nav ml-auto">
-				<li class="nav-item"><a class="nav-link mx-2" href="cart.jsp">
+				<li class="nav-item"><a class="nav-link mx-2" href="<%=request.getContextPath()%>/getCartServlet">
 						<i class="fas fa-shopping-cart"></i> Cart
 				</a></li>
 			</ul>

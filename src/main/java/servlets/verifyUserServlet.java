@@ -25,6 +25,7 @@ public class verifyUserServlet extends HttpServlet {
     private String username = "";
     private String password = "";
     private String firstName = "";
+    private int MemberID = 0;
     private String email = "";
     private String pwd = "";
 
@@ -97,10 +98,13 @@ public class verifyUserServlet extends HttpServlet {
                 password = memberRs.getString("password");
                 username = memberRs.getString("email");
                 firstName = memberRs.getString("first_name");
+                MemberID = Integer.parseInt(memberRs.getString("member_id"));
 
                 String userRole = "memberUser";
                 session.setAttribute("sessUserRole", userRole);
                 session.setAttribute("sessUserID", email);
+                session.setAttribute("sessMemberID", MemberID);
+                session.setAttribute("sessUserName", firstName);
 				session.setAttribute("loginStatus", "success");
 				session.setMaxInactiveInterval(5 * 60);
 				

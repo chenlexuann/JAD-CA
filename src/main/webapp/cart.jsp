@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ page import="java.util.*"%>
+<%@ page import="books.Book"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -12,15 +13,12 @@
 <meta charset="UTF-8">
 <title>Cart</title>
 <script>
-$(document).ready(function() {
-	if(request.getParameter("redirect").equals("false")){
-		
-	} else {
-		window.location.href = "<%=request.getContextPath()%>
-/getBooksServlet";
-					}
+	$(document)
+			.ready(
+					function() {
 <%String role = session.getAttribute("sessUserRole") + "";
 String message = request.getParameter("statusCode");
+double price = 0.0;
 boolean admin = false;
 boolean loggedIn = false;
 if (role != null && role.equals("adminUser")) {
@@ -29,7 +27,18 @@ if (role != null && role.equals("adminUser")) {
 if (role != null && role.equals("memberUser") || role.equals("adminUser")) {
 	loggedIn = true;
 }%>
-})</script>
+	})
+</script>
+<style>
+.center-text {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	height: 50vh;
+	font-size: 24px;
+	font-weight: bold;
+}
+</style>
 </head>
 <body>
 	<nav class="navbar navbar-expand-lg navbar-light bg-light">
@@ -74,8 +83,9 @@ if (role != null && role.equals("memberUser") || role.equals("adminUser")) {
 				%>
 			</ul>
 			<ul class="navbar-nav ml-auto">
-				<li class="nav-item"><a class="nav-link mx-2" href="cart.jsp">
-						<i class="fas fa-shopping-cart"></i> Cart
+				<li class="nav-item"><a class="nav-link mx-2"
+					href="<%=request.getContextPath()%>/getCartServlet"> <i
+						class="fas fa-shopping-cart"></i> Cart
 				</a></li>
 			</ul>
 		</div>
@@ -83,35 +93,72 @@ if (role != null && role.equals("memberUser") || role.equals("adminUser")) {
 	<%
 	if (role != null && (role.equals("memberUser") || role.equals("adminUser"))) {
 		// Retrieve cart details from session and display the list of books
-		List<String> cartBooks = (List<String>) session.getAttribute("cartBooks");
-		if (cartBooks == null || cartBooks.isEmpty()) {
+		ArrayList<Book> booksInCart = (ArrayList<Book>) session.getAttribute("booksInCart");
+		if (booksInCart == null || booksInCart.isEmpty()) {
 	%>
-	<div>No books in the cart.</div>
+	<div class="center-text">No books in the cart.</div>
 	<%
 	} else {
-	%>
-	<div>
-		<h2>Books in the Cart:</h2>
-		<ul>
-			<%
-			for (String book : cartBooks) {
-			%>
-			<li><%=book%></li>
-			<%
-			}
-			%>
-		</ul>
+	%><div class="container">
+		<div class="row justify-content-center">
+			<div class="col-lg-10">
+				<table class="table">
+					<tr>
+						<th>Title</th>
+						<th>Author</th>
+						<th>Price</th>
+						<th>Quantity</th>
+						<th>Publisher</th>
+						<th>Publication Date</th>
+					</tr>
+					</thead>
+					<tbody>
+						<%
+						int loopCounter = 1;
+						for (Book book : booksInCart) {
+							price += book.getPrice();
+						%>
+						<tr>
+							<td><%=book.getTitle()%></td>
+							<td><%=book.getAuthorName()%></td>
+							<td><%=book.getPrice()%></td>
+							<td><%=book.getQuantity()%></td>
+							<td><%=book.getPublisherName()%></td>
+							<td><%=book.getPublicationDate()%></td>
+							<td>
+								<form action="<%=request.getContextPath()%>/removeBookServlet"
+									method="POST">
+									<input type="hidden" name="WhichBook" value="<%=loopCounter%>">
+									<button type="submit">Remove</button>
+								</form>
+							</td>
+						</tr>
+						<%
+						loopCounter++;
+						}
+						%>
+					</tbody>
+				</table>
+				<div class="text-right">
+					<h5>Total Price:</h5>
+					<%
+					out.print(String.format("%.2f", price));
+					%>
+				</div>
+			</div>
+		</div>
 	</div>
 	<%
 	}
 	} else {
 	%>
 	<script>
-	alert("Please Log in to continue.");
-	window.location.href="login.jsp";
+		alert("Please log in to continue.");
+		window.location.href = "login.jsp";
 	</script>
 	<%
 	}
 	%>
+
 </body>
 </html>
