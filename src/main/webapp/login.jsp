@@ -26,6 +26,21 @@
 	object-fit: contain;
 }
 </style>
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    <% //init variables
+    String message = request.getParameter("statusCode");
+
+    //out.print (message);
+    if (message != null && message.equals("invalidLogin")) {%>
+      alert("Wrong email or password!");
+    <%}
+
+    if (message != null && message.equals("sessionTimeOut")) {%>
+      alert("Session timed out. Please log in again!");
+    <%}%>
+  });
+</script>
 </head>
 <body>
 	<div class="login-form">
@@ -56,13 +71,4 @@
 		</form>
 	</div>
 </body>
-<script>
-<%//init variables
-String message = request.getParameter("statusCode");
-
-//out.print (message);
-if (message != null && message.equals("invalidLogin")) {%>
-	alert("Wrong email or password!");
-<%}%>
-</script>
 </html>

@@ -29,12 +29,18 @@
 String message = request.getParameter("statusCode");
 boolean admin = false;
 boolean loggedIn = false;
+boolean member = false;
 if (role != null && role.equals("adminUser")) {
 	admin = true;
 }
 if (role != null && role.equals("memberUser") || role.equals("adminUser")) {
 	loggedIn = true;
-}%>
+}
+if(role != null && role.equals("memberUser")) {
+	member = true;
+}
+
+%>
 	})
 </script>
 <style>
@@ -88,9 +94,18 @@ if (role != null && role.equals("memberUser") || role.equals("adminUser")) {
 				if (admin) {
 				%>
 				<li class="nav-item"><a class="nav-link mx-2"
-					aria-current="page" href="admin.jsp" id="Admin">Admin</a></li>
+					aria-current="page" href="CA1/admin/menu.jsp" id="Admin">Admin</a></li>
 				<%
-				}
+				} else if(member){
+					String firstName = request.getParameter("user");
+					%>
+					<li class="nav-item">
+					    <a class="nav-link mx-2" aria-current="page" href="CA1/member/viewAccount.jsp" id="UserEdit">
+					        <%= firstName %>
+					    </a>
+					</li>
+					<%
+					}
 				%>
 			</ul>
 			<ul class="navbar-nav ml-auto">

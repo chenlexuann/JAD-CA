@@ -12,9 +12,52 @@ Description: ST0510/JAD Assignment 1 -->
 <head>
 <meta charset="ISO-8859-1">
 <title>Manage Books</title>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<link rel="stylesheet"
+	href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+	integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk"
+	crossorigin="anonymous">
+<script>
+<%String role = session.getAttribute("sessUserRole") + "";
+String message = request.getParameter("statusCode");
+boolean admin = false;
+if (role != null && role.equals("adminUser")) {
+	admin = true;
+}%></script>
 </head>
 <body>
-	<%@include file="header.html"%>
+	<nav class="navbar navbar-expand-lg navbar-light bg-light">
+		<a class="navbar-brand" href="home.jsp"> <img
+			src="../../img/kittyLogo.png" width="auto" height="50" alt="kitty books">
+		</a>
+		<button class="navbar-toggler" type="button" data-toggle="collapse"
+			data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown"
+			aria-expanded="false" aria-label="Toggle navigation">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+		<div class="collapse navbar-collapse" id="navbarNavDropdown">
+			<ul class="navbar-nav">
+				<li class="nav-item">
+					<div class="mx-2">
+						<form action='<%=request.getContextPath()%>/logoutUserServlet'
+							class=logoutForm id="Logout">
+							<button type="submit" class="btn btn-danger mr-2">Logout</button>
+						</form>
+					</div>
+				</li>
+				<li class="nav-item"><a class="nav-link active mx-2"
+					aria-current="page" href="../../home.jsp">Home</a></li>
+				<%
+				if (admin) {
+				%>
+				<li class="nav-item"><a class="nav-link mx-2"
+					aria-current="page" href="menu.jsp" id="Admin">Admin</a></li>
+				<%
+				}
+				%>
+			</ul>
+		</div>
+	</nav>
 	<%
 	String dm_userID = (String) session.getAttribute("sessUserID");
 	String dm_userRole = (String) session.getAttribute("sessUserRole");
@@ -55,7 +98,7 @@ Description: ST0510/JAD Assignment 1 -->
 			// Class.forName("com.mysql.cj.jdbc.Driver");
 
 			// Step 2: Define Connection URL
-			String connURL = "jdbc:mysql://localhost/bookstore?user=root&password=T0513022G&serverTimezone=UTC";
+			String connURL = "jdbc:mysql://localhost/bookstore?user=root&password=root&serverTimezone=UTC";
 
 			// Step 3: Establish connection to URL
 			Connection conn = DriverManager.getConnection(connURL);
@@ -119,7 +162,8 @@ Description: ST0510/JAD Assignment 1 -->
 <script>
 	function confirmDelete() {
 		if(confirm("Are you sure you want to delete this book?")){ // if user clicks "OK"
-			var msg = "<%=msg%>"; // due to separation between server side and client side code
+			var msg = "<%=msg%>
+	"; // due to separation between server side and client side code
 			window.location.href = msg;
 		} else {
 			// do nothing

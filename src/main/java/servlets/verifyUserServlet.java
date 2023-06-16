@@ -72,13 +72,14 @@ public class verifyUserServlet extends HttpServlet {
             if (adminRs.next()) {
                 password = adminRs.getString("password");
                 username = adminRs.getString("email");
-                firstName = adminRs.getString("first_name");
 
                 String userRole = "adminUser";
                 session.setAttribute("sessUserRole", userRole);
                 session.setAttribute("sessUserID", email);
+				session.setAttribute("loginStatus", "success");
+				session.setMaxInactiveInterval(5 * 60);
 
-                response.sendRedirect("admin.jsp?role=" + userRole + "&user=" + email + "&statusCode=validLogin");
+                response.sendRedirect("CA1/admin/menu.jsp?role=" + userRole + "&user=" + email + "&statusCode=validLogin");
                 return; // Exit the method after redirecting
             }
 
@@ -100,8 +101,10 @@ public class verifyUserServlet extends HttpServlet {
                 String userRole = "memberUser";
                 session.setAttribute("sessUserRole", userRole);
                 session.setAttribute("sessUserID", email);
-
-                response.sendRedirect("home.jsp?role=" + userRole + "&user=" + email + "&statusCode=validLogin");
+				session.setAttribute("loginStatus", "success");
+				session.setMaxInactiveInterval(5 * 60);
+				
+                response.sendRedirect("home.jsp?role=" + userRole + "&user=" + firstName + "&statusCode=validLogin");
                 return; // Exit the method after redirecting
             }
 

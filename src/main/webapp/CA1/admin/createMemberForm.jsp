@@ -10,6 +10,11 @@ Description: ST0510/JAD Assignment 1 -->
 <head>
 <meta charset="UTF-8">
 <title>Create Member Form</title>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<link rel="stylesheet"
+	href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+	integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk"
+	crossorigin="anonymous">
 </head>
 <body>
 	<%@include file="header.html"%>

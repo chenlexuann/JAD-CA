@@ -83,7 +83,7 @@ if (role != null && role.equals("memberUser") || role.equals("adminUser")) {
 				if (admin) {
 				%>
 				<li class="nav-item"><a class="nav-link mx-2"
-					aria-current="page" href="admin.jsp" id="Admin">Admin</a></li>
+					aria-current="page" href="CA1/admin/menu.jsp" id="Admin">Admin</a></li>
 				<%
 				}
 				%>
@@ -141,8 +141,12 @@ if (role != null && role.equals("memberUser") || role.equals("adminUser")) {
 					</div>
 				</div>
 				<div class="text-end">
-					<button class="btn btn-primary" id="addToCartButton">Add
-						to Cart</button>
+					<form action="<%=request.getContextPath()%>/add2Cart"
+						method="post">
+						<input type="hidden" name="bookId" value="<%=book.getBookId()%>">
+						<button type="submit" class="btn btn-primary" id="addToCartButton">Add
+							to Cart</button>
+					</form>
 				</div>
 			</div>
 		</div>
@@ -151,5 +155,4 @@ if (role != null && role.equals("memberUser") || role.equals("adminUser")) {
 <!-- Bootstrap JS -->
 <script
 	src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
-</body>
 </html>

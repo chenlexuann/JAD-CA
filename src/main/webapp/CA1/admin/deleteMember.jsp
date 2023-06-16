@@ -10,6 +10,11 @@ Description: ST0510/JAD Assignment 1 -->
 <head>
 <meta charset="UTF-8">
 <title>Delete Member</title>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<link rel="stylesheet"
+	href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+	integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk"
+	crossorigin="anonymous">
 </head>
 <body>
 	<%@page import="java.sql.*"%>
@@ -30,7 +35,7 @@ Description: ST0510/JAD Assignment 1 -->
 		// Class.forName("com.mysql.cj.jdbc.Driver");
 
 		// Step 2: Define Connection URL
-		String connURL = "jdbc:mysql://localhost/bookstore?user=root&password=T0513022G&serverTimezone=UTC";
+		String connURL = "jdbc:mysql://localhost/bookstore?user=root&password=root&serverTimezone=UTC";
 
 		// Step 3: Establish connection to URL
 		Connection conn = DriverManager.getConnection(connURL);

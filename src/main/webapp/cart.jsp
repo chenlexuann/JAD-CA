@@ -81,28 +81,37 @@ if (role != null && role.equals("memberUser") || role.equals("adminUser")) {
 		</div>
 	</nav>
 	<%
-if (role != null && (role.equals("memberUser") || role.equals("adminUser"))) {
-    // Retrieve cart details from session and display the list of books
-    List<String> cartBooks = (List<String>) session.getAttribute("cartBooks");
-    if (cartBooks == null || cartBooks.isEmpty()) {
-        %>
-        <div>No books in the cart.</div>
-        <%
-    } else {
-        %>
-        <div>
-            <h2>Books in the Cart:</h2>
-            <ul>
-                <% for (String book : cartBooks) { %>
-                <li><%= book %></li>
-                <% } %>
-            </ul>
-        </div>
-        <%
-    }
-} else {
-    // Redirected to log in page
-}
-%>
+	if (role != null && (role.equals("memberUser") || role.equals("adminUser"))) {
+		// Retrieve cart details from session and display the list of books
+		List<String> cartBooks = (List<String>) session.getAttribute("cartBooks");
+		if (cartBooks == null || cartBooks.isEmpty()) {
+	%>
+	<div>No books in the cart.</div>
+	<%
+	} else {
+	%>
+	<div>
+		<h2>Books in the Cart:</h2>
+		<ul>
+			<%
+			for (String book : cartBooks) {
+			%>
+			<li><%=book%></li>
+			<%
+			}
+			%>
+		</ul>
+	</div>
+	<%
+	}
+	} else {
+	%>
+	<script>
+	alert("Please Log in to continue.");
+	window.location.href="login.jsp";
+	</script>
+	<%
+	}
+	%>
 </body>
 </html>

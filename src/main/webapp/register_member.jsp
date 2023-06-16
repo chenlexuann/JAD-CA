@@ -13,7 +13,6 @@ body {
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	height: 80vh;
 }
 
 .registration-form {
@@ -62,6 +61,7 @@ body {
 					class="form-control" id="password" name="password" required>
 			</div>
 			<button type="submit" class="btn btn-primary btn-block">Register</button>
+			<br/>
 			<div class="clearfix">
 				<a href="<%=request.getContextPath()%>/logoutUserServlet"
 					class="pull-right">Cancel</a>
