@@ -49,6 +49,9 @@ Book book = (Book) request.getAttribute("bookDetail");%>
 	max-height: 30vh;
 	object-fit: contain;
 }
+.img-fluid.book-cover {
+        max-height: 70%; 
+    }
 </style>
 </head>
 <body>
@@ -155,22 +158,24 @@ Book book = (Book) request.getAttribute("bookDetail");%>
 					</div>
 				</div>
 				<div class="text-end">
-					<form action="<%=request.getContextPath()%>/add2Cart" method="post">
+					<%
+					if (loggedIn) {
+					%><form action="<%=request.getContextPath()%>/add2Cart"
+						method="post">
 						<input type="hidden" name="bookId" value="<%=book.getBookId()%>">
-						<%
-						if (loggedIn) {
-						%><button type="submit" class="btn btn-primary"
-							id="addToCartButton">Add to Cart</button>
-						<%
-						} else {
-						%>
-						<button type="submit" onclick="window.location.href = 'login.jsp'" class="btn btn-primary"
-							id="addToCartButton">Log in to add to cart</button>
-						<%
-						}
-						%>
-
+						<button type="submit" class="btn btn-primary" id="addToCartButton">Add
+							to Cart</button>
 					</form>
+					<%
+					} else {
+					%>
+					<button onclick="window.location.href = 'login.jsp'"
+						class="btn btn-primary" id="addToCartButton">Log in to
+						add to cart</button>
+					<%
+					}
+					%>
+
 				</div>
 			</div>
 		</div>

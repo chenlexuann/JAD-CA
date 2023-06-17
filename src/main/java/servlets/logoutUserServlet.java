@@ -35,6 +35,8 @@ public class logoutUserServlet extends HttpServlet {
 			session.removeAttribute("sessUserID");
 			session.removeAttribute("sessUserRole");
 			session.removeAttribute("sessUserName");
+	        session.removeAttribute("booksInCart");
+            session.removeAttribute("cart");
 		}
 		
 		String redirectURL = "/JAD-CA/home.jsp";

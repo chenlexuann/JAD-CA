@@ -1,5 +1,6 @@
 package servlets;
 
+
 import java.io.IOException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -14,31 +15,38 @@ import books.Book;
 @WebServlet("/removeBookServlet")
 public class removeBookServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-       
-    public removeBookServlet() {
-        super();
-    }
 
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String bookOrderParam = request.getParameter("WhichBook");
-        
-        if (bookOrderParam != null && !bookOrderParam.isEmpty()) {
-            int bookOrder = Integer.parseInt(bookOrderParam);
+	public removeBookServlet() {
+		super();
+	}
 
-            // Retrieve cart details from session
-            ArrayList<Book> booksInCart = (ArrayList<Book>) request.getSession().getAttribute("cart");
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		String bookOrderParam = request.getParameter("WhichBook");
+		HttpSession session = request.getSession();
 
-            if (booksInCart != null && bookOrder >= 0 && bookOrder < booksInCart.size()) {
-                booksInCart.remove(bookOrder); // Remove the book using the correct index
-            }
-        }
+		if (bookOrderParam != null && !bookOrderParam.isEmpty()) {
+			int bookOrder = Integer.parseInt(bookOrderParam);
 
-        // Redirect back to the cart page
-        response.sendRedirect(request.getContextPath() + "/getCartServlet");
-    }
+			// Retrieve cart details from session
+			ArrayList<Book> booksInCart = (ArrayList<Book>) request.getSession().getAttribute("cart");
 
+			if (booksInCart != null && bookOrder >= 0 && bookOrder <= booksInCart.size()) {
+                booksInCart.remove(bookOrder - 1); // Remove the book using the specified index
 
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+                if (booksInCart.isEmpty()) {
+                    // No more books in the cart, remove the cart session attribute
+                    session.removeAttribute("cart");
+                }
+			}
+		}
+
+//		// Redirect back to the cart page
+		response.sendRedirect(request.getContextPath() + "/getCartServlet");
+	}
+
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 		doGet(request, response);
 	}
 }

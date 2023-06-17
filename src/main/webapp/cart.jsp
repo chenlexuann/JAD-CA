@@ -38,6 +38,11 @@ if (role != null && role.equals("memberUser") || role.equals("adminUser")) {
 	font-size: 24px;
 	font-weight: bold;
 }
+
+.tiny-image {
+	width: 50px; /* Set the width of the image */
+	height: auto; /* Maintain the aspect ratio */
+}
 </style>
 </head>
 <body>
@@ -94,6 +99,7 @@ if (role != null && role.equals("memberUser") || role.equals("adminUser")) {
 	if (role != null && (role.equals("memberUser") || role.equals("adminUser"))) {
 		// Retrieve cart details from session and display the list of books
 		ArrayList<Book> booksInCart = (ArrayList<Book>) session.getAttribute("booksInCart");
+
 		if (booksInCart == null || booksInCart.isEmpty()) {
 	%>
 	<div class="center-text">No books in the cart.</div>
@@ -104,12 +110,13 @@ if (role != null && role.equals("memberUser") || role.equals("adminUser")) {
 			<div class="col-lg-10">
 				<table class="table">
 					<tr>
+						<th>Cover</th>
 						<th>Title</th>
 						<th>Author</th>
 						<th>Price</th>
 						<th>Quantity</th>
 						<th>Publisher</th>
-						<th>Publication Date</th>
+						<th>Published</th>
 					</tr>
 					</thead>
 					<tbody>
@@ -119,6 +126,8 @@ if (role != null && role.equals("memberUser") || role.equals("adminUser")) {
 							price += book.getPrice();
 						%>
 						<tr>
+							<td><img src="<%=book.getImageUrl()%>" class="tiny-image"
+								alt="Book Image"></td>
 							<td><%=book.getTitle()%></td>
 							<td><%=book.getAuthorName()%></td>
 							<td><%=book.getPrice()%></td>
