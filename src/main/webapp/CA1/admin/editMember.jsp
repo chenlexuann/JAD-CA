@@ -15,11 +15,6 @@ Description: ST0510/JAD Assignment 1 -->
 	href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
 	integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk"
 	crossorigin="anonymous">
-<script>
-	function goBack() {
-		window.location.href = "manageBooks.jsp";
-	}
-</script>
 </head>
 <body>
 	<%@page import="java.sql.*"%>
@@ -44,7 +39,7 @@ Description: ST0510/JAD Assignment 1 -->
 		// Class.forName("com.mysql.cj.jdbc.Driver");
 
 		// Step 2: Define Connection URL
-		String connURL = "jdbc:mysql://localhost/bookstore?user=root&password=root&serverTimezone=UTC";
+		String connURL = "jdbc:mysql://localhost/bookstore?user=root&password=T0513022G&serverTimezone=UTC";
 
 		// Step 3: Establish connection to URL
 		Connection conn = DriverManager.getConnection(connURL);
@@ -118,8 +113,7 @@ Description: ST0510/JAD Assignment 1 -->
 				</tr>
 			</table>
 		</form>
-		<button onclick="goBack()">Back</button>
-		<br>
+		<br> <a href='manageMembers.jsp'><button>Back</button></a> <br>
 	</div>
 
 	<%@include file="footer.html"%>

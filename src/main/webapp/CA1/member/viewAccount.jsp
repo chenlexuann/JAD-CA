@@ -80,7 +80,7 @@ if (role != null && role.equals("memberUser")) {
 		// Class.forName("com.mysql.cj.jdbc.Driver");
 
 		// Step 2: Define Connection URL
-		String connURL = "jdbc:mysql://localhost/bookstore?user=root&password=root&serverTimezone=UTC";
+		String connURL = "jdbc:mysql://localhost/bookstore?user=root&password=T0513022G&serverTimezone=UTC";
 
 		// Step 3: Establish connection to URL
 		Connection conn = DriverManager.getConnection(connURL);
@@ -146,8 +146,7 @@ if (role != null && role.equals("memberUser")) {
 <script>
 	function confirmDelete() {
 		if(confirm("Are you sure you want to delete your account?")){ // if user clicks "OK"
-			var email = "<%=email%>
-	"; // due to separation between server side and client side code
+			var email = "<%=email%>"; // due to separation between server side and client side code
 			window.location.href = "deleteAccount.jsp?email=" + email;
 		} else {
 			// do nothing

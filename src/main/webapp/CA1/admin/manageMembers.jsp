@@ -28,7 +28,8 @@ if (role != null && role.equals("adminUser")) {
 <body>
 	<nav class="navbar navbar-expand-lg navbar-light bg-light">
 		<a class="navbar-brand" href="home.jsp"> <img
-			src="../../img/kittyLogo.png" width="auto" height="50" alt="kitty books">
+			src="../../img/kittyLogo.png" width="auto" height="50"
+			alt="kitty books">
 		</a>
 		<button class="navbar-toggler" type="button" data-toggle="collapse"
 			data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown"
@@ -87,7 +88,7 @@ if (role != null && role.equals("adminUser")) {
 			// Class.forName("com.mysql.cj.jdbc.Driver");
 
 			// Step 2: Define Connection URL
-			String connURL = "jdbc:mysql://localhost/bookstore?user=root&password=root&serverTimezone=UTC";
+			String connURL = "jdbc:mysql://localhost/bookstore?user=root&password=T0513022G&serverTimezone=UTC";
 
 			// Step 3: Establish connection to URL
 			Connection conn = DriverManager.getConnection(connURL);

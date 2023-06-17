@@ -15,11 +15,6 @@ Description: ST0510/JAD Assignment 1 -->
 	href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
 	integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk"
 	crossorigin="anonymous">
-<script>
-	function goBack() {
-		window.location.href = "manageBooks.jsp";
-	}
-</script>
 </head>
 <body>
 	<%@page import="java.sql.*"%>
@@ -51,13 +46,15 @@ Description: ST0510/JAD Assignment 1 -->
 		// Class.forName("com.mysql.cj.jdbc.Driver");
 
 		// Step 2: Define Connection URL
-		String connURL = "jdbc:mysql://localhost/bookstore?user=root&password=root&serverTimezone=UTC";
+		String connURL = "jdbc:mysql://localhost/bookstore?user=root&password=T0513022G&serverTimezone=UTC";
 
 		// Step 3: Establish connection to URL
 		Connection conn = DriverManager.getConnection(connURL);
 
 		// Step 4: Create Statement object
-		// Statement stmt = conn.createStatement();
+		Statement stmt1 = conn.createStatement();
+		Statement stmt2 = conn.createStatement();
+		Statement stmt3 = conn.createStatement();
 
 		// Step 5: Execute SQL Command
 		String sqlStr = "SELECT g.genre_name, a.author_name, p.publisher_name, b.* FROM books b	JOIN genres g ON b.genre_id = g.genre_id JOIN authors a ON b.author_id = a.author_id JOIN publishers p ON b.publisher_id = p.publisher_id WHERE book_id=?";
@@ -65,7 +62,23 @@ Description: ST0510/JAD Assignment 1 -->
 		pstmt.setString(1, id);
 		ResultSet rs = pstmt.executeQuery();
 
+		// Create SQL statement that retrieves all genres for genres array
+		String sqlStrGenre = "SELECT * FROM genres;";
+		ResultSet rsGenre = stmt1.executeQuery(sqlStrGenre);
+
+		// Create SQL statement that retrieves all authors for authors array
+		String sqlStrAuthor = "SELECT * FROM authors;";
+		ResultSet rsAuthor = stmt2.executeQuery(sqlStrAuthor);
+
+		// Create SQL statement that retrieves all publishers for publishers array
+		String sqlStrPublisher = "SELECT * FROM publishers;";
+		ResultSet rsPublisher = stmt3.executeQuery(sqlStrPublisher);
+
 		// Step 6: Process Result
+		List<String> genres = new ArrayList<>();
+		List<String> authors = new ArrayList<>();
+		List<String> publishers = new ArrayList<>();
+
 		if (rs.next()) {
 			genre = rs.getString("genre_name");
 			author = rs.getString("author_name");
@@ -79,14 +92,6 @@ Description: ST0510/JAD Assignment 1 -->
 			rating = rs.getString("rating");
 		}
 
-		/* List<String> genres = new ArrayList<>();
-		String genre_name;
-		
-		while (rs.next()) {
-			genre_name = rs.getString("genre_name");
-			genres.add(genre_name);
-		} */
-
 		String oldGenre = genre;
 		String oldAuthor = author;
 		String oldPublisher = publisher;
@@ -97,6 +102,21 @@ Description: ST0510/JAD Assignment 1 -->
 		String oldPublicationDate = publication_date;
 		String oldISBN = ISBN;
 		String oldRating = rating;
+
+		while (rsGenre.next()) {
+			genre = rsGenre.getString("genre_name");
+			genres.add(genre);
+		}
+
+		while (rsAuthor.next()) {
+			author = rsAuthor.getString("author_name");
+			authors.add(author);
+		}
+
+		while (rsPublisher.next()) {
+			publisher = rsPublisher.getString("publisher_name");
+			publishers.add(publisher);
+		}
 	%>
 
 	<div align="center">
@@ -108,50 +128,49 @@ Description: ST0510/JAD Assignment 1 -->
 					<td style="padding: 5px;"><input type="text" name="id"
 						value="<%=id%>" readonly="readonly" style="padding: 3px;"></td>
 				</tr>
-
-				<%-- <select name="genreTest">
-					<option value="0" selected>None Selected</option>
-					<%
-					/* List<String> genres = (List<String>) session.getAttribute("genres");
-					List<Integer> genre_id = (List<Integer>) session.getAttribute("genre_ID"); */
-					for (int i = 0; i < genres.size(); i++) {
-						String genreStr = genres.get(i);
-					%>
-					<option value="<%=genreStr%>"><%=genreStr%></option>
-					<%
-					}
-					%>
-				</select> --%>
-
 				<tr>
 					<td style="padding: 5px;">genre:</td>
 					<td style="padding: 5px;"><select name="genre">
-							<option value="Fantasy">Fantasy</option>
-							<option value="Science Fiction">Science Fiction</option>
-							<option value="Mystery">Mystery</option>
-					</select> <input type="hidden" name="oldGenre" value="<%=oldGenre%>">
+							<option value="<%=oldGenre%>" selected><%=oldGenre%></option>
+							<%
+							for (int i = 0; i < genres.size(); i++) {
+								String genreStr = genres.get(i);
+							%>
+							<option value="<%=genreStr%>"><%=genreStr%></option>
+							<%
+							}
+							%>
+					</select><input type="hidden" name="oldGenre" value="<%=oldGenre%>">
 					</td>
 				</tr>
 				<tr>
 					<td style="padding: 5px;">author:</td>
 					<td style="padding: 5px;"><select name="author">
-							<option value="Isaac Asimov">Isaac Asimov</option>
-							<option value="Agatha Christie">Agatha Christie</option>
-							<option value="Stephen King">Stephen King</option>
-							<option value="Gillan Flynn">Gillan Flynn</option>
-					</select> <input type="hidden" name="oldAuthor" value="<%=oldAuthor%>">
+							<option value="<%=oldAuthor%>" selected><%=oldAuthor%></option>
+							<%
+							for (int i = 0; i < authors.size(); i++) {
+								String authorStr = authors.get(i);
+							%>
+							<option value="<%=authorStr%>"><%=authorStr%></option>
+							<%
+							}
+							%>
+					</select><input type="hidden" name="oldAuthor" value="<%=oldAuthor%>">
 					</td>
 				</tr>
 				<tr>
 					<td style="padding: 5px;">publisher:</td>
 					<td style="padding: 5px;"><select name="publisher">
-							<option value="Penguin Random House">Penguin Random
-								House</option>
-							<option value="Simon & Schuster">Simon & Schuster</option>
-							<option value="Macmillan Publishers">Macmillan
-								Publishers</option>
-							<option value="Hachette Book Group">Hachette Book Group</option>
-					</select> <input type="hidden" name="oldPublisher" value="<%=oldPublisher%>">
+							<option value="<%=oldPublisher%>" selected><%=oldPublisher%></option>
+							<%
+							for (int i = 0; i < publishers.size(); i++) {
+								String publisherStr = publishers.get(i);
+							%>
+							<option value="<%=publisherStr%>"><%=publisherStr%></option>
+							<%
+							}
+							%>
+					</select><input type="hidden" name="oldPublisher" value="<%=oldPublisher%>">
 					</td>
 				</tr>
 				<tr>
@@ -180,7 +199,7 @@ Description: ST0510/JAD Assignment 1 -->
 						value="<%=oldDescription%>"></td>
 				</tr>
 				<tr>
-					<td style="padding: 5px;">publication_date:</td>
+					<td style="padding: 5px;">publication date:</td>
 					<td style="padding: 5px;"><input type="text"
 						name="publication_date" value="<%=publication_date%>"
 						style="padding: 3px;"> <input type="hidden"
@@ -209,8 +228,7 @@ Description: ST0510/JAD Assignment 1 -->
 				</tr>
 			</table>
 		</form>
-		<button onclick="goBack()">Back</button>
-		<br>
+		<br> <a href='manageBooks.jsp'><button>Back</button></a> <br>
 	</div>
 
 	<%
