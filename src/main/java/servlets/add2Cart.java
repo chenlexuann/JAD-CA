@@ -1,5 +1,8 @@
 package servlets;
-
+//Author: Chen Lexuan
+//Class: DIT/FT/2A/02
+//Date: 8/6/2023
+//Description: ST0510/JAD Assignment 1
 import java.util.*;
 import java.io.IOException;
 import javax.servlet.ServletException;

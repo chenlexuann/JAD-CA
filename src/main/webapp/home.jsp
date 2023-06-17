@@ -1,5 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
+		<!-- Author: Chen Lexuan
+Class: DIT/FT/2A/02
+Date: 8/6/2023
+Description: ST0510/JAD Assignment 1 -->
 <%@ page import="java.util.*"%>
 <%@ page import="books.Book"%>
 <%@ page import="java.sql.*"%>
@@ -172,7 +176,7 @@ if (role != null && role.equals("memberUser")) {
 					<label for="category" class="form-label">Category</label>
 					<div class="input-group mb-3">
 						<select class="custom-select form-control" id="genre" name="genre">
-							<option value="0" selected>None Selected</option>
+							<option value="0" selected>All Categories</option>
 							<%
 							if (genre_id != null && genres != null) {
 								for (int i = 0; i < genres.size(); i++) {
