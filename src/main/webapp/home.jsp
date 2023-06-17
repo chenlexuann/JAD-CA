@@ -2,6 +2,10 @@
 	pageEncoding="UTF-8"%>
 <%@ page import="java.util.*"%>
 <%@ page import="books.Book"%>
+<%@ page import="java.sql.*"%>
+<%@ page import="java.io.PrintWriter"%>
+<%@ page import="javax.servlet.http.HttpSession"%>
+
 
 <!DOCTYPE html>
 <html>
@@ -22,11 +26,48 @@
 	$(document)
 			.ready(
 					function() {
-						if (request.getParameter("redirect").equals("false")) {
+<%List<String> genres1 = new ArrayList<>();
+List<Integer> genre_ID = new ArrayList<>();
+try {
+	// Step1: Load JDBC Driver
+	Class.forName("com.mysql.cj.jdbc.Driver");
 
-						}
-<%String role = session.getAttribute("sessUserRole") + "";
+	// Step 2: Define Connection URL
+	String connURL = "jdbc:mysql://localhost/bookstore?user=root&password=root&serverTimezone=UTC";
+
+	// Step 3: Establish connection to URL
+	Connection conn = DriverManager.getConnection(connURL);
+
+	// Step 4: Create Statement object
+	Statement stmt = conn.createStatement();
+
+	// Step 5: Execute SQL Command
+	String sqlStr = "SELECT * FROM bookstore.genres;";
+	ResultSet rs = stmt.executeQuery(sqlStr);
+
+	// Step 6: Process Result
+	while (rs.next()) {
+		String genre_name = rs.getString("genre_name");
+		int genre_id = rs.getInt("genre_id");
+		genres1.add(genre_name);
+		genre_ID.add(genre_id);
+	}
+
+	// Set the categories as request attributes
+	// Set the genres as session attributes
+	session.setAttribute("genres", genres1);
+	session.setAttribute("genre_ID", genre_ID);
+
+	// Close the connection
+	conn.close();
+} catch (Exception e) {
+	out.println("Error: " + e);
+	out.close();
+}
+String role = session.getAttribute("sessUserRole") + "";
 String message = request.getParameter("statusCode");
+List<String> genres = (List<String>) session.getAttribute("genres");
+List<Integer> genre_id = (List<Integer>) session.getAttribute("genre_ID");
 boolean admin = false;
 boolean loggedIn = false;
 boolean member = false;
@@ -36,11 +77,9 @@ if (role != null && role.equals("adminUser")) {
 if (role != null && role.equals("memberUser") || role.equals("adminUser")) {
 	loggedIn = true;
 }
-if(role != null && role.equals("memberUser")) {
+if (role != null && role.equals("memberUser")) {
 	member = true;
-}
-
-%>
+}%>
 	})
 </script>
 <style>
@@ -96,21 +135,21 @@ if(role != null && role.equals("memberUser")) {
 				<li class="nav-item"><a class="nav-link mx-2"
 					aria-current="page" href="CA1/admin/menu.jsp" id="Admin">Admin</a></li>
 				<%
-				} else if(member){
-					String firstName = (String) session.getAttribute("sessUserName");
-					%>
-					<li class="nav-item">
-					    <a class="nav-link mx-2" aria-current="page" href="CA1/member/viewAccount.jsp" id="UserEdit">
-					        <%= firstName %>
-					    </a>
-					</li>
-					<%
-					}
+				} else if (member) {
+				String firstName = (String) session.getAttribute("sessUserName");
+				%>
+				<li class="nav-item"><a class="nav-link mx-2"
+					aria-current="page" href="CA1/member/viewAccount.jsp" id="UserEdit">
+						<%=firstName%>
+				</a></li>
+				<%
+				}
 				%>
 			</ul>
 			<ul class="navbar-nav ml-auto">
-				<li class="nav-item"><a class="nav-link mx-2" href="<%=request.getContextPath()%>/getCartServlet">
-						<i class="fas fa-shopping-cart"></i> Cart
+				<li class="nav-item"><a class="nav-link mx-2"
+					href="<%=request.getContextPath()%>/getCartServlet"> <i
+						class="fas fa-shopping-cart"></i> Cart
 				</a></li>
 			</ul>
 		</div>
@@ -135,8 +174,6 @@ if(role != null && role.equals("memberUser")) {
 						<select class="custom-select form-control" id="genre" name="genre">
 							<option value="0" selected>None Selected</option>
 							<%
-							List<String> genres = (List<String>) session.getAttribute("genres");
-							List<Integer> genre_id = (List<Integer>) session.getAttribute("genre_ID");
 							if (genre_id != null && genres != null) {
 								for (int i = 0; i < genres.size(); i++) {
 									String genre = genres.get(i);

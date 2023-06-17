@@ -76,11 +76,11 @@ public class verifyUserServlet extends HttpServlet {
 
                 String userRole = "adminUser";
                 session.setAttribute("sessUserRole", userRole);
-                session.setAttribute("sessUserID", email);
+                session.setAttribute("sessUserID", username);
 				session.setAttribute("loginStatus", "success");
 				session.setMaxInactiveInterval(5 * 60);
 
-                response.sendRedirect("CA1/admin/menu.jsp?role=" + userRole + "&user=" + email + "&statusCode=validLogin");
+                response.sendRedirect("CA1/admin/menu.jsp?role=" + userRole + "&user=" + username + "&statusCode=validLogin");
                 return; // Exit the method after redirecting
             }
 

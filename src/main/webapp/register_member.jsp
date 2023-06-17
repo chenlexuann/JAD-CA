@@ -61,7 +61,7 @@ body {
 					class="form-control" id="password" name="password" required>
 			</div>
 			<button type="submit" class="btn btn-primary btn-block">Register</button>
-			<br/>
+			<br />
 			<div class="clearfix">
 				<a href="<%=request.getContextPath()%>/logoutUserServlet"
 					class="pull-right">Cancel</a>
@@ -77,6 +77,7 @@ String message = request.getParameter("statusCode");
 //out.print (message);
 if (message != null && message.equals("success")) {%>
 	alert("Success!");
+	windows.location.href = "login.jsp";
 <%} else if (message != null && message.equals("duplicateEmail")) {%>
 	alert("Email already exist!");
 <%}%>
