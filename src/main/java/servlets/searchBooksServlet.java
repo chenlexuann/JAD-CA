@@ -77,39 +77,40 @@ public class searchBooksServlet extends HttpServlet {
 
 			} else if (genre_ID.equals("0") || price.equals("") || titleSearch.equals("")) {
 				if (genre_ID.equals("0") && price.equals("")) {
-					String sqlStr = "SELECT book_id, title, price, quantity, ISBN, image_url, author_name, genre_name, publisher_name, publication_date, rating, description FROM bookstore.books join authors on authors.author_id=books.author_id join genres on genres.genre_id= books.genre_id join publishers on publishers.publisher_id=books.publisher_id WHERE title LIKE UPPER(?)";
+					String sqlStr = "SELECT book_id, title, price, quantity, ISBN, image_url, author_name, genre_name, publisher_name, publication_date, rating, description FROM bookstore.books join authors on authors.author_id=books.author_id join genres on genres.genre_id= books.genre_id join publishers on publishers.publisher_id=books.publisher_id WHERE title LIKE UPPER(?) or author_name LIKE UPPER(?)";
 					PreparedStatement pstmt = conn.prepareStatement(sqlStr);
 					pstmt.setString(1, "%" + titleSearch + "%");
+					pstmt.setString(2, "%" + titleSearch + "%");
 
 					rs = pstmt.executeQuery(); // Assign the result to the rs variable
 				} else if (genre_ID.equals("0")) {
 					if(price.equals("")) {
-						String sqlStr = "SELECT book_id, title, price, quantity, ISBN, image_url, author_name, genre_name, publisher_name, publication_date, rating, description FROM bookstore.books join authors on authors.author_id=books.author_id join genres on genres.genre_id= books.genre_id join publishers on publishers.publisher_id=books.publisher_id WHERE title LIKE UPPER(?)";
+						String sqlStr = "SELECT book_id, title, price, quantity, ISBN, image_url, author_name, genre_name, publisher_name, publication_date, rating, description FROM bookstore.books join authors on authors.author_id=books.author_id join genres on genres.genre_id= books.genre_id join publishers on publishers.publisher_id=books.publisher_id WHERE title LIKE UPPER(?) or author_name LIKE UPPER(?)";
 						PreparedStatement pstmt = conn.prepareStatement(sqlStr);
 						pstmt.setString(1, "%" + titleSearch + "%");
+						pstmt.setString(2, "%" + titleSearch + "%");
 
 						rs = pstmt.executeQuery(); // Assign the result to the rs variable
 					} else {
-						String sqlStr = "SELECT book_id, title, price, quantity, ISBN, image_url, author_name, genre_name, publisher_name, publication_date, rating, description FROM bookstore.books join authors on authors.author_id=books.author_id join genres on genres.genre_id= books.genre_id join publishers on publishers.publisher_id=books.publisher_id WHERE books.price <= ? AND title LIKE UPPER(?)";
+						String sqlStr = "SELECT book_id, title, price, quantity, ISBN, image_url, author_name, genre_name, publisher_name, publication_date, rating, description FROM bookstore.books join authors on authors.author_id=books.author_id join genres on genres.genre_id= books.genre_id join publishers on publishers.publisher_id=books.publisher_id WHERE books.price <= ?";
 						PreparedStatement pstmt = conn.prepareStatement(sqlStr);
 						pstmt.setString(1, price);
-						pstmt.setString(2, "%" + titleSearch + "%");
 
 						rs = pstmt.executeQuery(); // Assign the result to the rs variable
 					}
 					
 				} else if (price.equals("")) {
 					if(genre_ID.equals("0")) {
-						String sqlStr = "SELECT book_id, title, price, quantity, ISBN, image_url, author_name, genre_name, publisher_name, publication_date, rating, description FROM bookstore.books join authors on authors.author_id=books.author_id join genres on genres.genre_id= books.genre_id join publishers on publishers.publisher_id=books.publisher_id title LIKE UPPER(?)";
+						String sqlStr = "SELECT book_id, title, price, quantity, ISBN, image_url, author_name, genre_name, publisher_name, publication_date, rating, description FROM bookstore.books join authors on authors.author_id=books.author_id join genres on genres.genre_id= books.genre_id join publishers on publishers.publisher_id=books.publisher_id WHERE title LIKE UPPER(?) or author_name LIKE UPPER(?)";
 						PreparedStatement pstmt = conn.prepareStatement(sqlStr);
 						pstmt.setString(1, "%" + titleSearch + "%");
+						pstmt.setString(2, "%" + titleSearch + "%");
 
 						rs = pstmt.executeQuery(); // Assign the result to the rs variable
 					} else {
-						String sqlStr = "SELECT book_id, title, price, quantity, ISBN, image_url, author_name, genre_name, publisher_name, publication_date, rating, description FROM bookstore.books join authors on authors.author_id=books.author_id join genres on genres.genre_id= books.genre_id join publishers on publishers.publisher_id=books.publisher_id WHERE books.genre_id = ? AND title LIKE UPPER(?)";
+						String sqlStr = "SELECT book_id, title, price, quantity, ISBN, image_url, author_name, genre_name, publisher_name, publication_date, rating, description FROM bookstore.books join authors on authors.author_id=books.author_id join genres on genres.genre_id= books.genre_id join publishers on publishers.publisher_id=books.publisher_id WHERE books.genre_id = ?";
 						PreparedStatement pstmt = conn.prepareStatement(sqlStr);
 						pstmt.setString(1, genre_ID);
-						pstmt.setString(2, "%" + titleSearch + "%");
 						
 						rs = pstmt.executeQuery(); // Assign the result to the rs variable
 					}
@@ -130,11 +131,12 @@ public class searchBooksServlet extends HttpServlet {
 					}
 				}
 			} else {
-				String sqlStr = "SELECT book_id, title, price, quantity, ISBN, image_url, author_name, genre_name, publisher_name, publication_date, rating, description FROM bookstore.books join authors on authors.author_id=books.author_id join genres on genres.genre_id= books.genre_id join publishers on publishers.publisher_id=books.publisher_id WHERE books.genre_id = ? AND title LIKE UPPER(?) AND books.price <= ?";
+				String sqlStr = "SELECT book_id, title, price, quantity, ISBN, image_url, author_name, genre_name, publisher_name, publication_date, rating, description FROM bookstore.books join authors on authors.author_id=books.author_id join genres on genres.genre_id= books.genre_id join publishers on publishers.publisher_id=books.publisher_id WHERE books.genre_id = ? AND title LIKE UPPER(?) or author_name LIKE UPPER(?) AND books.price <= ?";
 				PreparedStatement pstmt = conn.prepareStatement(sqlStr);
 				pstmt.setString(1, genre_ID);
 				pstmt.setString(2, "%" + titleSearch + "%");
-				pstmt.setString(3, price);
+				pstmt.setString(3, "%" + titleSearch + "%");
+				pstmt.setString(4, price);
 				
 				rs = pstmt.executeQuery(); // Assign the result to the rs variable
 			}

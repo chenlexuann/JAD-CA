@@ -195,7 +195,7 @@ if (role != null && role.equals("memberUser")) {
 			<div class="row mt-4">
 				<div class="col-12">
 					<input type="text" class="form-control"
-						placeholder="Search for Title" name="searchTitle" id="TitleInput">
+						placeholder="Search for Title or Author" name="searchTitle" id="TitleInput">
 				</div>
 			</div>
 			<div class="d-flex justify-content-end my-2">

@@ -193,10 +193,9 @@ Description: ST0510/JAD Assignment 1 -->
 				</tr>
 				<tr>
 					<td style="padding: 5px;">description:</td>
-					<td style="padding: 5px;"><input type="text"
-						name="description" value="<%=description%>" style="padding: 3px;">
-						<input type="hidden" name="oldDescription"
-						value="<%=oldDescription%>"></td>
+					<td style="padding: 5px;"><textarea name="description"
+							rows="5" style="padding: 3px;"><%=description%></textarea> <input
+						type="hidden" name="oldDescription" value="<%=oldDescription%>"></td>
 				</tr>
 				<tr>
 					<td style="padding: 5px;">publication date:</td>

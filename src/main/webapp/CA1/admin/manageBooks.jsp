@@ -115,7 +115,7 @@ if (role != null && role.equals("adminUser")) {
 			// Step 6: Process Result
 			out.print("<table border='1' align='center' style='border-collapse: collapse; text-align: center;'>");
 			out.print(
-			"<tr><th style='padding: 5px;'>id</th><th style='padding: 5px;'>genre</th><th style='padding: 5px;'>author</th><th style='padding: 5px;'>publisher</th><th style='padding: 5px;'>title</th><th style='padding: 5px;'>price</th><th style='padding: 5px;'>quantity</th><th style='padding: 5px;'>description</th><th style='padding: 5px;'>publication date</th><th style='padding: 5px;'>ISBN</th><th style='padding: 5px;'>rating</th><th colspan='2' style='padding: 5px;'>action</th></tr>");
+			"<tr><th style='padding: 5px;'>id</th><th style='padding: 5px;'>genre</th><th style='padding: 5px;'>author</th><th style='padding: 5px;'>publisher</th><th style='padding: 5px;'>title</th><th style='padding: 5px;'>price</th><th style='padding: 5px;'>quantity</th><th style='padding: 5px;'>publication date</th><th style='padding: 5px;'>ISBN</th><th style='padding: 5px;'>rating</th><th colspan='2' style='padding: 5px;'>action</th></tr>");
 
 			while (rs.next()) {
 				id = rs.getInt("book_id");
@@ -133,9 +133,8 @@ if (role != null && role.equals("adminUser")) {
 				out.print("<tr><td style='padding: 5px;'>" + id + "</td><td style='padding: 5px;'>" + genre
 				+ "</td><td style='padding: 5px;'>" + author + "</td><td style='padding: 5px;'>" + publisher
 				+ "</td><td style='padding: 5px;'>" + title + "</td><td style='padding: 5px;'>$" + price
-				+ "</td><td style='padding: 5px;'>" + quantity + "</td><td style='padding: 5px;'>" + description
-				+ "</td><td style='padding: 5px;'>" + publication_date + "</td><td style='padding: 5px;'>" + ISBN
-				+ "</td><td style='padding: 5px;'>" + rating + "</td>");
+				+ "</td><td style='padding: 5px;'>" + quantity + "</td><td style='padding: 5px;'>" + publication_date
+				+ "</td><td style='padding: 5px;'>" + ISBN + "</td><td style='padding: 5px;'>" + rating + "</td>");
 				out.print("<td style='padding: 5px;'><a href='editBook.jsp?id=" + id + "&title=" + title + "&price=" + price
 				+ "&quantity=" + quantity + "&description=" + description + "&publication_date=" + publication_date
 				+ "&ISBN=" + ISBN + "&rating=" + rating
@@ -164,7 +163,8 @@ if (role != null && role.equals("adminUser")) {
 <script>
 	function confirmDelete() {
 		if(confirm("Are you sure you want to delete this book?")){ // if user clicks "OK"
-			var msg = "<%=msg%>"; // due to separation between server side and client side code
+			var msg = "<%=msg%>
+	"; // due to separation between server side and client side code
 			window.location.href = msg;
 		} else {
 			// do nothing
