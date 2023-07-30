@@ -43,7 +43,7 @@ public class logoutUserServlet extends HttpServlet {
             session.removeAttribute("cart");
 		}
 		
-		String redirectURL = "/JAD-CA/home.jsp";
+		String redirectURL = "/JAD-CA/login.jsp";
 		if (session == null) {
 			redirectURL += "?statusCode=loggedOut";
 		}

@@ -1,6 +1,6 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
+-<%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
-		<!-- Author: Chen Lexuan
+<!-- Author: Chen Lexuan
 Class: DIT/FT/2A/02
 Date: 8/6/2023
 Description: ST0510/JAD Assignment 1 -->
@@ -21,6 +21,7 @@ Description: ST0510/JAD Assignment 1 -->
 	integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk"
 	crossorigin="anonymous">
 <title>home</title>
+<%@ include file="header.jsp" %>
 <script>
 	function reply_click(clicked_id) {
 		session.setAttribute('book_id', clicked_id);
@@ -68,22 +69,8 @@ try {
 	out.println("Error: " + e);
 	out.close();
 }
-String role = session.getAttribute("sessUserRole") + "";
-String message = request.getParameter("statusCode");
 List<String> genres = (List<String>) session.getAttribute("genres");
-List<Integer> genre_id = (List<Integer>) session.getAttribute("genre_ID");
-boolean admin = false;
-boolean loggedIn = false;
-boolean member = false;
-if (role != null && role.equals("adminUser")) {
-	admin = true;
-}
-if (role != null && role.equals("memberUser") || role.equals("adminUser")) {
-	loggedIn = true;
-}
-if (role != null && role.equals("memberUser")) {
-	member = true;
-}%>
+List<Integer> genre_id = (List<Integer>) session.getAttribute("genre_ID");%>
 	})
 </script>
 <style>
@@ -101,63 +88,6 @@ if (role != null && role.equals("memberUser")) {
 </style>
 </head>
 <body>
-	<nav class="navbar navbar-expand-lg navbar-light bg-light">
-		<a class="navbar-brand" href="home.jsp"> <img
-			src="./img/kittyLogo.png" width="auto" height="50" alt="kitty books">
-		</a>
-		<button class="navbar-toggler" type="button" data-toggle="collapse"
-			data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown"
-			aria-expanded="false" aria-label="Toggle navigation">
-			<span class="navbar-toggler-icon"></span>
-		</button>
-		<div class="collapse navbar-collapse" id="navbarNavDropdown">
-			<ul class="navbar-nav">
-				<li class="nav-item">
-					<div class="mx-2">
-						<%
-						if (loggedIn) {
-						%>
-						<form action='<%=request.getContextPath()%>/logoutUserServlet'
-							class=logoutForm id="Logout">
-							<button type="submit" class="btn btn-danger mr-2">Logout</button>
-						</form>
-						<%
-						} else {
-						%>
-						<a href="login.jsp" class="btn btn-primary mr-2" id="Login">Log
-							In</a>
-						<%
-						}
-						%>
-					</div>
-				</li>
-				<li class="nav-item"><a class="nav-link active mx-2"
-					aria-current="page" href="home.jsp">Home</a></li>
-				<%
-				if (admin) {
-				%>
-				<li class="nav-item"><a class="nav-link mx-2"
-					aria-current="page" href="CA1/admin/menu.jsp" id="Admin">Admin</a></li>
-				<%
-				} else if (member) {
-				String firstName = (String) session.getAttribute("sessUserName");
-				%>
-				<li class="nav-item"><a class="nav-link mx-2"
-					aria-current="page" href="CA1/member/viewAccount.jsp" id="UserEdit">
-						<%=firstName%>
-				</a></li>
-				<%
-				}
-				%>
-			</ul>
-			<ul class="navbar-nav ml-auto">
-				<li class="nav-item"><a class="nav-link mx-2"
-					href="<%=request.getContextPath()%>/getCartServlet"> <i
-						class="fas fa-shopping-cart"></i> Cart
-				</a></li>
-			</ul>
-		</div>
-	</nav>
 	<div class="container mt-4">
 		<div class="center-image">
 			<img src="./img/kittyLogo.png" alt="Kitty books">
@@ -195,7 +125,8 @@ if (role != null && role.equals("memberUser")) {
 			<div class="row mt-4">
 				<div class="col-12">
 					<input type="text" class="form-control"
-						placeholder="Search for Title or Author" name="searchTitle" id="TitleInput">
+						placeholder="Search for Title or Author" name="searchTitle"
+						id="TitleInput">
 				</div>
 			</div>
 			<div class="d-flex justify-content-end my-2">

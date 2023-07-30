@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
-		<!-- Author: Chen Lexuan
+<!-- Author: Chen Lexuan
 Class: DIT/FT/2A/02
 Date: 8/6/2023
 Description: ST0510/JAD Assignment 1 -->
@@ -16,22 +16,11 @@ Description: ST0510/JAD Assignment 1 -->
 	crossorigin="anonymous">
 <meta charset="UTF-8">
 <title>Cart</title>
+<%@ include file="header.jsp"%>
 <script>
-	$(document)
-			.ready(
-					function() {
-<%String role = session.getAttribute("sessUserRole") + "";
-String message = request.getParameter("statusCode");
-double price = 0.0;
-boolean admin = false;
-boolean loggedIn = false;
-if (role != null && role.equals("adminUser")) {
-	admin = true;
-}
-if (role != null && role.equals("memberUser") || role.equals("adminUser")) {
-	loggedIn = true;
-}%>
-	})
+	
+<%double price = 0.0;%>
+	
 </script>
 <style>
 .center-text {
@@ -50,55 +39,7 @@ if (role != null && role.equals("memberUser") || role.equals("adminUser")) {
 </style>
 </head>
 <body>
-	<nav class="navbar navbar-expand-lg navbar-light bg-light">
-		<a class="navbar-brand" href="home.jsp"> <img
-			src="./img/kittyLogo.png" width="auto" height="50" alt="kitty books">
-		</a>
-		<button class="navbar-toggler" type="button" data-toggle="collapse"
-			data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown"
-			aria-expanded="false" aria-label="Toggle navigation">
-			<span class="navbar-toggler-icon"></span>
-		</button>
-		<div class="collapse navbar-collapse" id="navbarNavDropdown">
-			<ul class="navbar-nav">
-				<li class="nav-item">
-					<div class="mx-2">
-						<%
-						if (loggedIn) {
-						%>
-						<form action='<%=request.getContextPath()%>/logoutUserServlet'
-							class=logoutForm id="Logout">
-							<button type="submit" class="btn btn-danger mr-2">Logout</button>
-						</form>
-						<%
-						} else {
-						%>
-						<a href="login.jsp" class="btn btn-primary mr-2" id="Login">Log
-							In</a>
-						<%
-						}
-						%>
-					</div>
-				</li>
-				<li class="nav-item"><a class="nav-link active mx-2"
-					aria-current="page" href="home.jsp">Home</a></li>
-				<%
-				if (admin) {
-				%>
-				<li class="nav-item"><a class="nav-link mx-2"
-					aria-current="page" href="admin.jsp" id="Admin">Admin</a></li>
-				<%
-				}
-				%>
-			</ul>
-			<ul class="navbar-nav ml-auto">
-				<li class="nav-item"><a class="nav-link mx-2"
-					href="<%=request.getContextPath()%>/getCartServlet"> <i
-						class="fas fa-shopping-cart"></i> Cart
-				</a></li>
-			</ul>
-		</div>
-	</nav>
+
 	<%
 	if (role != null && (role.equals("memberUser") || role.equals("adminUser"))) {
 		// Retrieve cart details from session and display the list of books

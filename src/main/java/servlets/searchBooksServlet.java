@@ -4,6 +4,7 @@ package servlets;
 //Date: 8/6/2023
 //Description: ST0510/JAD Assignment 1
 
+import dbaccess.*;
 import java.io.*;
 import java.sql.*;
 import java.util.ArrayList;
@@ -50,133 +51,21 @@ public class searchBooksServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		// TODO Auto-generated method stub
+		List<Book> books = null;
 		genre_ID = request.getParameter("genre");
 		price = request.getParameter("maxPrice");
 		titleSearch = request.getParameter("searchTitle");
 
 		try {
-			// Step1: Load JDBC Driver
-			Class.forName("com.mysql.cj.jdbc.Driver");
-
-			// Step 2: Define Connection URL
-			String connURL = "jdbc:mysql://localhost/bookstore?user=root&password=root&serverTimezone=UTC";
-
-			// Step 3: Establish connection to URL
-			Connection conn = DriverManager.getConnection(connURL);
-
-			// Step 4: Create Statement object
-			// Statement stmt = conn.createStatement();
-
-			ResultSet rs = null; // Declare the ResultSet variables outside the if conditions
-
-			if (genre_ID.equals("0") && price.equals("") && titleSearch.equals("")) {
-				String sqlStr = "SELECT book_id, title, price, quantity, ISBN, image_url, author_name, genre_name, publisher_name, publication_date, rating, description FROM bookstore.books join authors on authors.author_id=books.author_id join genres on genres.genre_id= books.genre_id join publishers on publishers.publisher_id=books.publisher_id;";
-				PreparedStatement pstmt = conn.prepareStatement(sqlStr);
-
-				rs = pstmt.executeQuery(); // Assign the result to the rs variable
-
-			} else if (genre_ID.equals("0") || price.equals("") || titleSearch.equals("")) {
-				if (genre_ID.equals("0") && price.equals("")) {
-					String sqlStr = "SELECT book_id, title, price, quantity, ISBN, image_url, author_name, genre_name, publisher_name, publication_date, rating, description FROM bookstore.books join authors on authors.author_id=books.author_id join genres on genres.genre_id= books.genre_id join publishers on publishers.publisher_id=books.publisher_id WHERE (title LIKE UPPER(?) or author_name LIKE UPPER(?))";
-					PreparedStatement pstmt = conn.prepareStatement(sqlStr);
-					pstmt.setString(1, "%" + titleSearch + "%");
-					pstmt.setString(2, "%" + titleSearch + "%");
-
-					rs = pstmt.executeQuery(); // Assign the result to the rs variable
-				} else if (genre_ID.equals("0")) {
-					if(price.equals("")) {
-						String sqlStr = "SELECT book_id, title, price, quantity, ISBN, image_url, author_name, genre_name, publisher_name, publication_date, rating, description FROM bookstore.books join authors on authors.author_id=books.author_id join genres on genres.genre_id= books.genre_id join publishers on publishers.publisher_id=books.publisher_id WHERE (title LIKE UPPER(?) or author_name LIKE UPPER(?))";
-						PreparedStatement pstmt = conn.prepareStatement(sqlStr);
-						pstmt.setString(1, "%" + titleSearch + "%");
-						pstmt.setString(2, "%" + titleSearch + "%");
-
-						rs = pstmt.executeQuery(); // Assign the result to the rs variable
-					} else {
-						String sqlStr = "SELECT book_id, title, price, quantity, ISBN, image_url, author_name, genre_name, publisher_name, publication_date, rating, description FROM bookstore.books join authors on authors.author_id=books.author_id join genres on genres.genre_id= books.genre_id join publishers on publishers.publisher_id=books.publisher_id WHERE books.price <= ? AND (title LIKE UPPER(?) or author_name LIKE UPPER(?))";
-						PreparedStatement pstmt = conn.prepareStatement(sqlStr);
-						pstmt.setString(1, price);
-						pstmt.setString(2, "%" + titleSearch + "%");
-						pstmt.setString(3, "%" + titleSearch + "%");
-
-						rs = pstmt.executeQuery(); // Assign the result to the rs variable
-					}
-					
-				} else if (price.equals("")) {
-					if(genre_ID.equals("0")) {
-						String sqlStr = "SELECT book_id, title, price, quantity, ISBN, image_url, author_name, genre_name, publisher_name, publication_date, rating, description FROM bookstore.books join authors on authors.author_id=books.author_id join genres on genres.genre_id= books.genre_id join publishers on publishers.publisher_id=books.publisher_id WHERE (title LIKE UPPER(?) or author_name LIKE UPPER(?))";
-						PreparedStatement pstmt = conn.prepareStatement(sqlStr);
-						pstmt.setString(1, "%" + titleSearch + "%");
-						pstmt.setString(2, "%" + titleSearch + "%");
-
-						rs = pstmt.executeQuery(); // Assign the result to the rs variable
-					} else {
-						String sqlStr = "SELECT book_id, title, price, quantity, ISBN, image_url, author_name, genre_name, publisher_name, publication_date, rating, description FROM bookstore.books join authors on authors.author_id=books.author_id join genres on genres.genre_id= books.genre_id join publishers on publishers.publisher_id=books.publisher_id WHERE books.genre_id = ? AND (title LIKE UPPER(?) or author_name LIKE UPPER(?))";
-						PreparedStatement pstmt = conn.prepareStatement(sqlStr);
-						pstmt.setString(1, genre_ID);
-						pstmt.setString(2, "%" + titleSearch + "%");
-						pstmt.setString(3, "%" + titleSearch + "%");
-						
-						rs = pstmt.executeQuery(); // Assign the result to the rs variable
-					}
-				} else if (titleSearch.equals("")) {
-					if(genre_ID.equals("0")) {
-						String sqlStr = "SELECT book_id, title, price, quantity, ISBN, image_url, author_name, genre_name, publisher_name, publication_date, rating, description FROM bookstore.books join authors on authors.author_id=books.author_id join genres on genres.genre_id= books.genre_id join publishers on publishers.publisher_id=books.publisher_id WHERE books.price <= ?";
-						PreparedStatement pstmt = conn.prepareStatement(sqlStr);
-						pstmt.setString(1, price);
-
-						rs = pstmt.executeQuery(); // Assign the result to the rs variable
-					} else {
-						String sqlStr = "SELECT book_id, title, price, quantity, ISBN, image_url, author_name, genre_name, publisher_name, publication_date, rating, description FROM bookstore.books join authors on authors.author_id=books.author_id join genres on genres.genre_id= books.genre_id join publishers on publishers.publisher_id=books.publisher_id WHERE books.genre_id = ? AND books.price <= ?";
-						PreparedStatement pstmt = conn.prepareStatement(sqlStr);
-						pstmt.setString(1, genre_ID);
-						pstmt.setString(2, price);
-						
-						rs = pstmt.executeQuery(); // Assign the result to the rs variable
-					}
-				}
-			} else {
-				String sqlStr = "SELECT book_id, title, price, quantity, ISBN, image_url, author_name, genre_name, publisher_name, publication_date, rating, description FROM bookstore.books join authors on authors.author_id=books.author_id join genres on genres.genre_id= books.genre_id join publishers on publishers.publisher_id=books.publisher_id WHERE books.genre_id = ? AND (title LIKE UPPER(?) or author_name LIKE UPPER(?)) AND books.price <= ?";
-				PreparedStatement pstmt = conn.prepareStatement(sqlStr);
-				pstmt.setString(1, genre_ID);
-				pstmt.setString(2, "%" + titleSearch + "%");
-				pstmt.setString(3, "%" + titleSearch + "%");
-				pstmt.setString(4, price);
-				
-				rs = pstmt.executeQuery(); // Assign the result to the rs variable
-			}
-
-			// Step 6: Process Result
-			List<Book> books = new ArrayList<>();
-
-			while (rs.next()) {
-				Book book = new Book();
-				book.setBookId(rs.getInt("book_id"));
-				book.setTitle(rs.getString("title"));
-				book.setPrice(rs.getDouble("price"));
-				book.setQuantity(rs.getInt("quantity"));
-				book.setISBN(rs.getString("ISBN"));
-				book.setImageUrl(rs.getString("image_url"));
-				book.setAuthorName(rs.getString("author_name"));
-				book.setGenreName(rs.getString("genre_name"));
-				book.setPublisherName(rs.getString("publisher_name"));
-				book.setPublicationDate(rs.getDate("publication_date"));
-				book.setRating(rs.getString("rating"));
-				book.setDescription(rs.getString("description"));
-
-				books.add(book);
-			}
+			BookDAO bdatabase = new BookDAO();
+			books = bdatabase.searchBooks(genre_ID, price, titleSearch);
 
 			// Set the categories as request attributes
 			request.setAttribute("books", books);
 
 			RequestDispatcher dispatcher = request.getRequestDispatcher("home.jsp");
 			dispatcher.forward(request, response);
-
-			// Close the connection
-			conn.close();
-		} catch (
-
-		Exception e) {
+		} catch (Exception e) {
 			PrintWriter out = response.getWriter();
 			out.println("Error: " + e);
 			out.close();

@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
-	<!-- Author: Chen Lexuan
+<!-- Author: Chen Lexuan
 Class: DIT/FT/2A/02
 Date: 8/6/2023
 Description: ST0510/JAD Assignment 1 -->
@@ -53,9 +53,10 @@ Book book = (Book) request.getAttribute("bookDetail");%>
 	max-height: 30vh;
 	object-fit: contain;
 }
+
 .img-fluid.book-cover {
-        max-height: 70%; 
-    }
+	max-height: 70%;
+}
 </style>
 </head>
 <body>

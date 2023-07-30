@@ -79,7 +79,7 @@ public class getCartServlet extends HttpServlet {
 	                    String authorName = rs.getString("author_name");
 	                    String genreName = rs.getString("genre_name");
 	                    String publisherName = rs.getString("publisher_name");
-	                    Date publicationDate = rs.getDate("publication_date");
+	                    String publicationDate = rs.getString("publication_date");
 	                    String rating = rs.getString("rating");
 	                    String description = rs.getString("description");
 

@@ -1,4 +1,4 @@
-package books;
+package dbaccess;
 
 public class Book {
     private int bookId;

@@ -78,10 +78,10 @@ public class createUserServlet extends HttpServlet {
 
 	        if (rowsAffected > 0) {
 	            // Registration successful
-	            response.sendRedirect("register_member.jsp?statusCode=success");
+	            response.sendRedirect("login.jsp?statusCode=success");
 	        } else {
 	            // Duplicate email
-	            response.sendRedirect("register_member.jsp?statusCode=duplicateEmail");
+	            response.sendRedirect("login.jsp?statusCode=duplicateEmail");
 	        }
 
 	        // Close the connection

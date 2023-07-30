@@ -163,8 +163,7 @@ if (role != null && role.equals("adminUser")) {
 <script>
 	function confirmDelete() {
 		if(confirm("Are you sure you want to delete this book?")){ // if user clicks "OK"
-			var msg = "<%=msg%>
-	"; // due to separation between server side and client side code
+			var msg = <%=msg%> ; // due to separation between server side and client side code
 			window.location.href = msg;
 		} else {
 			// do nothing
