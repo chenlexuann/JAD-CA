@@ -262,21 +262,28 @@ body {
 	object-fit: contain;
 }
 </style>
-<script>
-document.addEventListener("DOMContentLoaded", function() {
-    <%//init variables
+
+<%
+//init variables
 String message = request.getParameter("statusCode");
 
 //out.print (message);
-if (message != null && message.equals("invalidLogin")) {%>
-      alert("Wrong email or password!");
-    <%}
-
-if (message != null && message.equals("sessionTimeOut")) {%>
-      alert("Session timed out. Please log in again!");
-    <%}%>
-  });
+if (message != null && message.equals("invalidLogin")) {
+%>
+<script>
+alert("Wrong email or password!");
 </script>
+<%
+}
+
+if (message != null && message.equals("sessionTimeOut")) {
+%>
+<script>
+alert("Session timed out. Please log in again!");
+</script>
+<%
+}
+%>
 </head>
 <body>
 	<div class="container">
@@ -287,9 +294,10 @@ if (message != null && message.equals("sessionTimeOut")) {%>
 					<h2>Sign up</h2>
 					<input type="text" id="firstName" name="firstName"
 						placeholder="First Name" required /> <input type="text"
-						id="lastName" name="lastName" placeholder="Last name" required /> <input
-						type="email" id="email" name="email" placeholder="Email" required /> <input
-						type="password" id="password" name="password" placeholder="Password" required />
+						id="lastName" name="lastName" placeholder="Last name" required />
+					<input type="email" id="email" name="email" placeholder="Email"
+						required /> <input type="password" id="password" name="password"
+						placeholder="Password" required />
 					<button>Sign up</button>
 				</form>
 				<div class="socials">
@@ -305,8 +313,7 @@ if (message != null && message.equals("sessionTimeOut")) {%>
 					<button type="submit" id="Login">Log in</button>
 				</form>
 				<div class="socials">
-					<a href="home.jsp">use
-						as guest</a>
+					<a href="home.jsp">use as guest</a>
 				</div>
 			</div>
 		</div>

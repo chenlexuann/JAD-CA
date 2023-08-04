@@ -5,21 +5,35 @@ Class: DIT/FT/2A/02
 Date: 8/6/2023
 Description: ST0510/JAD Assignment 1 -->
 <%@ page import="java.util.*"%>
-<%@ page import="books.Book"%>
+<%@ page import="model.*"%>
+<%@ page import="dbaccess.*"%>
+<%@ page import="java.text.DecimalFormat"%>
 <!DOCTYPE html>
 <html>
 <head>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<link rel="stylesheet"
-	href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
-	integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk"
-	crossorigin="anonymous">
+<%@ include file="header.jsp"%>
 <meta charset="UTF-8">
 <title>Cart</title>
-<%@ include file="header.jsp"%>
+<%@ include file="navbar.jsp"%>
 <script>
 	
-<%double price = 0.0;%>
+<%DecimalFormat dcf = new DecimalFormat("#.##");
+request.setAttribute("dcf", dcf);
+ArrayList<Cart> cart_list = (ArrayList<Cart>) session.getAttribute("cart-list");
+List<Cart> cartProduct = null;
+try {
+	if (cart_list != null) {
+		CartDAO cDAO = new CartDAO();
+		cartProduct = cDAO.getCartProducts(cart_list);
+		double total = cDAO.getTotalCartPrice(cart_list);
+		request.setAttribute("total", total);
+		request.setAttribute("cart_list", cart_list);
+	}
+} catch (Exception e) {
+	e.printStackTrace(); // For logging the exception
+	response.sendRedirect("home.jsp?statusCode=err");
+
+}%>
 	
 </script>
 <style>
@@ -39,80 +53,67 @@ Description: ST0510/JAD Assignment 1 -->
 </style>
 </head>
 <body>
-
-	<%
-	if (role != null && (role.equals("memberUser") || role.equals("adminUser"))) {
-		// Retrieve cart details from session and display the list of books
-		ArrayList<Book> booksInCart = (ArrayList<Book>) session.getAttribute("booksInCart");
-
-		if (booksInCart == null || booksInCart.isEmpty()) {
-	%>
-	<div class="center-text">No books in the cart.</div>
-	<%
-	} else {
-	%><div class="container">
+	<div class="container">
 		<div class="row justify-content-center">
 			<div class="col-lg-10">
 				<table class="table">
-					<tr>
-						<th>Cover</th>
-						<th>Title</th>
-						<th>Author</th>
-						<th>Price</th>
-						<th>Quantity</th>
-						<th>Publisher</th>
-						<th>Published</th>
-					</tr>
+					<thead>
+						<tr>
+							<th>Cover</th>
+							<th>Title</th>
+							<th>Author</th>
+							<th>Quantity Left</th>
+							<th>Total Price</th>
+							<th>Order Quantity</th>
+							<th>Action</th>
+						</tr>
 					</thead>
 					<tbody>
 						<%
-						int loopCounter = 1;
-						for (Book book : booksInCart) {
-							price += book.getPrice();
+						if (cart_list != null) {
+							for (Cart c : cartProduct) {
 						%>
 						<tr>
-							<td><img src="<%=book.getImageUrl()%>" class="tiny-image"
+							<td><img src="<%=c.getImageUrl()%>" class="tiny-image"
 								alt="Book Image"></td>
-							<td><%=book.getTitle()%></td>
-							<td><%=book.getAuthorName()%></td>
-							<td><%=book.getPrice()%></td>
-							<td><%=book.getQuantity()%></td>
-							<td><%=book.getPublisherName()%></td>
-							<td><%=book.getPublicationDate()%></td>
+							<td><%=c.getTitle()%></td>
+							<td><%=c.getAuthorName()%></td>
+							<td><%=c.getBookQuantity()%></td>
+							<td><%=((DecimalFormat) request.getAttribute("dcf")).format(c.getPrice())%></td>
 							<td>
-								<form action="<%=request.getContextPath()%>/removeBookServlet"
-									method="POST">
-									<input type="hidden" name="WhichBook" value="<%=loopCounter%>">
-									<button type="submit">Remove</button>
+								<form action="order-now" method="post" class="form-inline">
+									<input type="hidden" name="id" value="<%=c.getBookId()%>"
+										class="form-input">
+									<div class="form-group d-flex justify-content-between">
+										<a class="btn bnt-sm btn-incre"
+											href="quantity-inc-dec?action=inc&id=<%=c.getBookId()%>"><i
+											class="fas fa-plus-square"></i></a> <input type="text"
+											name="quantity" class="form-control"
+											value="<%=c.getCartQuantity()%>" readonly> <a
+											class="btn btn-sm btn-decre"
+											href="quantity-inc-dec?action=dec&id=<%=c.getBookId()%>"><i
+											class="fas fa-minus-square"></i></a>
+									</div>
 								</form>
 							</td>
+							<td><a
+								href="<%=request.getContextPath()%>/removeBookServlet?id=<%=c.getBookId()%>"
+								class="btn btn-sm btn-danger">Remove</a></td>
 						</tr>
 						<%
-						loopCounter++;
+						}
 						}
 						%>
 					</tbody>
 				</table>
 				<div class="text-right">
-					<h5>Total Price:</h5>
-					<%
-					out.print(String.format("%.2f", price));
-					%>
+					<h5>Total Price (w/o GST): $ ${(total>0)?dcf.format(total):0}
+					</h5>
+					<a class="mx-3 btn btn-primary" href="checkout.jsp">Check Out</a>
 				</div>
 			</div>
 		</div>
 	</div>
-	<%
-	}
-	} else {
-	%>
-	<script>
-		alert("Please log in to continue.");
-		window.location.href = "login.jsp";
-	</script>
-	<%
-	}
-	%>
-
+	<%@ include file="footer.jsp"%>
 </body>
 </html>

@@ -6,6 +6,8 @@ package servlets;
 
 
 import java.io.IOException;
+import java.io.PrintWriter;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -14,7 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import java.util.ArrayList;
-import books.Book;
+import model.*;
 
 @WebServlet("/removeBookServlet")
 public class removeBookServlet extends HttpServlet {
@@ -26,27 +28,26 @@ public class removeBookServlet extends HttpServlet {
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		String bookOrderParam = request.getParameter("WhichBook");
-		HttpSession session = request.getSession();
+		String bookId = request.getParameter("id");
 
-		if (bookOrderParam != null && !bookOrderParam.isEmpty()) {
-			int bookOrder = Integer.parseInt(bookOrderParam);
+		try (PrintWriter out = response.getWriter()) {
+			if (bookId != null) {
+				ArrayList<Cart> cart_list = (ArrayList<Cart>) request.getSession().getAttribute("cart-list");
+				if (cart_list != null) {
+					for (Cart c : cart_list) {
+						if (c.getBookId() == Integer.parseInt(bookId)) {
+							cart_list.remove(cart_list.indexOf(c));
+							break;
+						}
+					}
+				}
+				response.sendRedirect("cart.jsp");
 
-			// Retrieve cart details from session
-			ArrayList<Book> booksInCart = (ArrayList<Book>) request.getSession().getAttribute("cart");
-
-			if (booksInCart != null && bookOrder >= 0 && bookOrder <= booksInCart.size()) {
-                booksInCart.remove(bookOrder - 1); // Remove the book using the specified index
-
-                if (booksInCart.isEmpty()) {
-                    // No more books in the cart, remove the cart session attribute
-                    session.removeAttribute("cart");
-                }
+			} else {
+				response.sendRedirect("cart.jsp");
 			}
-		}
 
-//		// Redirect back to the cart page
-		response.sendRedirect(request.getContextPath() + "/getCartServlet");
+		}
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)

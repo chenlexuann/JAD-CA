@@ -4,6 +4,7 @@ package servlets;
 //Date: 8/6/2023
 //Description: ST0510/JAD Assignment 1
 
+import dbaccess.*;
 import java.io.*;
 import java.sql.*;
 import java.io.IOException;
@@ -19,6 +20,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+
+import dbaccess.BookDAO;
 
 
 
@@ -52,30 +55,10 @@ public class createUserServlet extends HttpServlet {
 	    pwd = request.getParameter("password");
 
 	    try {
-	        // Step 1: Load JDBC Driver
-	        Class.forName("com.mysql.cj.jdbc.Driver");
+	    	UserDAO uDAO = new UserDAO();
 
-	        // Step 2: Define Connection URL
-	        String connURL = "jdbc:mysql://localhost/bookstore?user=root&password=root&serverTimezone=UTC";
-
-	        // Step 3: Establish connection to URL
-	        Connection conn = DriverManager.getConnection(connURL);
-
-	        // Step 4: Create Statement object
-	        ResultSet rs = null;
-
-	        // Step 5: Execute SQL Command
-	        String sqlStr = "INSERT INTO bookstore.members (first_name, last_name, email, password) VALUES (?, ?, ?, ?);";
-	        PreparedStatement pstmt = conn.prepareStatement(sqlStr);
-
-	        pstmt.setString(1, firstName);
-	        pstmt.setString(2, lastName);
-	        pstmt.setString(3, email);
-	        pstmt.setString(4, pwd);
-
-	        // Execute the SQL statement
-	        int rowsAffected = pstmt.executeUpdate();
-
+	        int rowsAffected = uDAO.insertUser(firstName, lastName, email, pwd);
+	    	
 	        if (rowsAffected > 0) {
 	            // Registration successful
 	            response.sendRedirect("login.jsp?statusCode=success");
@@ -83,9 +66,6 @@ public class createUserServlet extends HttpServlet {
 	            // Duplicate email
 	            response.sendRedirect("login.jsp?statusCode=duplicateEmail");
 	        }
-
-	        // Close the connection
-	        conn.close();
 	    } catch (SQLIntegrityConstraintViolationException e) {
 	        // Duplicate entry for email
 	        response.sendRedirect("register_member.jsp?statusCode=duplicateEmail");

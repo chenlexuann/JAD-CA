@@ -22,7 +22,7 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import books.Book;
+import model.Book;
 import dbaccess.*;
 
 
@@ -53,17 +53,14 @@ public class bookDetailsServlet extends HttpServlet {
 	    WebTarget target = client.target(restUrl);
 	    Invocation.Builder invocationBuilder = target.request(MediaType.APPLICATION_JSON);
 	    Response resp = invocationBuilder.get();
-	    System.out.println("status: " + resp.getStatus());
 
 	    if (resp.getStatus() == Response.Status.OK.getStatusCode()) {
-	      System.out.print("success");
 	      Book book = resp.readEntity(Book.class);
 	      request.setAttribute("bookDetail",book);
 	      String url = "bookDetails.jsp";
 	      RequestDispatcher rd = request.getRequestDispatcher(url);
 	      rd.forward(request, response);
 	    } else {
-	      System.out.print("failed");
 	      String url = "bookDetails.jsp";
 	      request.setAttribute("err", "NotFound");
 	      RequestDispatcher rd = request.getRequestDispatcher(url);

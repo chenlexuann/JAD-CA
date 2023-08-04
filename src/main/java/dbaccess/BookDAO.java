@@ -1,20 +1,16 @@
 package dbaccess;
 
-import java.io.PrintWriter;
 /* ===========================================================
 Author: Chen Lexuan (2212562)
 Date: 5/7/2023
 Description: ST0510/JAD
 ============================================================= */
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.servlet.RequestDispatcher;
-
-import books.Book;
+import java.util.*;
+import model.*;
 
 public class BookDAO {
+	Connection conn = null;
 	public List<Book> searchBooks(String genre, String maxPrice, String searchTitle) throws SQLException {
 		List<Book> books = new ArrayList<>();
 		String genre_ID;
@@ -23,7 +19,6 @@ public class BookDAO {
 		genre_ID = genre;
 		price = maxPrice;
 		titleSearch = searchTitle;
-		Connection conn = null;
 		try {
 			conn = DBConnection.getConnection();
 			ResultSet rs = null; // Declare the ResultSet variables outside the if conditions
@@ -112,7 +107,7 @@ public class BookDAO {
 				book.setBookId(rs.getInt("book_id"));
 				book.setTitle(rs.getString("title"));
 				book.setPrice(rs.getDouble("price"));
-				book.setQuantity(rs.getInt("quantity"));
+				book.setBookQuantity(rs.getInt("quantity"));
 				book.setISBN(rs.getString("ISBN"));
 				book.setImageUrl(rs.getString("image_url"));
 				book.setAuthorName(rs.getString("author_name"));
@@ -121,8 +116,6 @@ public class BookDAO {
 				book.setPublicationDate(rs.getString("publication_date"));
 				book.setRating(rs.getString("rating"));
 				book.setDescription(rs.getString("description"));
-
-				System.out.println("success");
 				books.add(book);
 			}
 

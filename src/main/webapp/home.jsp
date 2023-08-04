@@ -1,27 +1,23 @@
--<%@ page language="java" contentType="text/html; charset=UTF-8"
+<%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <!-- Author: Chen Lexuan
 Class: DIT/FT/2A/02
 Date: 8/6/2023
 Description: ST0510/JAD Assignment 1 -->
 <%@ page import="java.util.*"%>
-<%@ page import="books.Book"%>
+<%@ page import="model.*"%>
+<%@ page import="dbaccess.*"%>
 <%@ page import="java.sql.*"%>
 <%@ page import="java.io.PrintWriter"%>
 <%@ page import="javax.servlet.http.HttpSession"%>
-
 
 <!DOCTYPE html>
 <html>
 <head>
 <!-- Bootstrap CSS -->
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<link rel="stylesheet"
-	href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
-	integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk"
-	crossorigin="anonymous">
+<%@ include file="header.jsp"%>
 <title>home</title>
-<%@ include file="header.jsp" %>
+<%@ include file="navbar.jsp"%>
 <script>
 	function reply_click(clicked_id) {
 		session.setAttribute('book_id', clicked_id);
@@ -160,7 +156,7 @@ List<Integer> genre_id = (List<Integer>) session.getAttribute("genre_ID");%>
 								<div class="col-md-6">
 									<h5>
 										Quantity:
-										<%=book.getQuantity()%></h5>
+										<%=book.getBookQuantity()%></h5>
 								</div>
 							</div>
 							<!-- Display other book details as needed -->
@@ -174,10 +170,6 @@ List<Integer> genre_id = (List<Integer>) session.getAttribute("genre_ID");%>
 			</div>
 		</div>
 	</div>
-</body>
-<!-- Bootstrap JS -->
-<script
-	src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
-
+	<%@ include file="footer.jsp"%>
 </body>
 </html>

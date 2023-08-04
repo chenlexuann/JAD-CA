@@ -1,10 +1,10 @@
-package books;
+package model;
 
 public class Book {
     private int bookId;
     private String title;
     private double price;
-    private int quantity;
+    private int bookQuantity;
     private String ISBN;
     private String imageUrl;
     private String authorName;
@@ -18,13 +18,13 @@ public class Book {
         // Default constructor
     }
 
-    public Book(int bookId, String title, double price, int quantity, String ISBN, String imageUrl,
+    public Book(int bookId, String title, double price, int bookQuantity, String ISBN, String imageUrl,
                 String authorName, String genreName, String publisherName, String publicationDate,
                 String rating, String description) {
         this.bookId = bookId;
         this.title = title;
         this.price = price;
-        this.quantity = quantity;
+        this.bookQuantity = bookQuantity;
         this.ISBN = ISBN;
         this.imageUrl = imageUrl;
         this.authorName = authorName;
@@ -59,12 +59,12 @@ public class Book {
         this.price = price;
     }
 
-    public int getQuantity() {
-        return quantity;
+    public int getBookQuantity() {
+        return bookQuantity;
     }
 
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
+    public void setBookQuantity(int bookQuantity) {
+        this.bookQuantity = bookQuantity;
     }
 
     public String getISBN() {
