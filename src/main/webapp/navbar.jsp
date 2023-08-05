@@ -89,6 +89,10 @@ if (message != null && message.equals("err")) {
 				aria-current="page" href="CA1/member/viewAccount.jsp" id="UserEdit">
 					<%=firstName%>
 			</a></li>
+			<li class="nav-item"><a class="nav-link mx-2"
+				aria-current="page" href="viewOrderHistory.jsp" id="OrderHistory">
+					Orders
+			</a></li>
 			<%
 			}
 			%>

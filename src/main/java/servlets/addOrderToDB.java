@@ -41,7 +41,7 @@ public class addOrderToDB extends HttpServlet {
 		User user = new User();
 		user = (User) session.getAttribute("user");
 		int rows = 0;
-		int rows2 = 0; 	
+		int rows2 = 0;
 		try {
 			if (memberID != null) {
 				UserDAO uDAO = new UserDAO();
@@ -56,7 +56,7 @@ public class addOrderToDB extends HttpServlet {
 
 						for (Cart c : cartProduct) {
 							rows2 = oDAO.createOrderItems(c, orderID);
-
+							session.removeAttribute("cart-list");
 							if (rows2 <= 0) {
 								throw new Exception("Error creating order items.");
 							}
@@ -76,9 +76,6 @@ public class addOrderToDB extends HttpServlet {
 			response.sendRedirect("home.jsp?statusCode=err");
 		} catch (Exception e) {
 			response.sendRedirect("home.jsp?statusCode=err");
-		} finally {
-			session.removeAttribute("cart-list");
-			session.removeAttribute("user");
 		}
 	}
 

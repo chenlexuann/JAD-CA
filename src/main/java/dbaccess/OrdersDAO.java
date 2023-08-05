@@ -54,4 +54,32 @@ public class OrdersDAO {
 		}
 		return affectedRows;
 	}
+
+	public List<Order> getOrderHistory(String userid) throws SQLException {
+		Connection conn = null;
+		List<Order> OrderHistory = new ArrayList<>();
+		try {
+			conn = DBConnection.getConnection();
+			String sqlStr = "SELECT m.member_id, o.order_id, m.email AS member_email, o.order_date, GROUP_CONCAT(DISTINCT b.title ORDER BY b.title ASC SEPARATOR ', ') AS titles, GROUP_CONCAT(oi.quantity ORDER BY b.title ASC SEPARATOR ', ') AS quantities, SUM(oi.unit_price * oi.quantity) AS total_price FROM orders o JOIN order_items oi ON o.order_id = oi.order_id JOIN books b ON oi.book_id = b.book_id JOIN members m ON o.member_id = m.member_id WHERE m.member_id = ? GROUP BY m.member_id, o.order_id, m.email, o.order_date;";
+			PreparedStatement pstmt = conn.prepareStatement(sqlStr);
+			pstmt.setString(1, userid);
+			ResultSet rs = pstmt.executeQuery();
+			while (rs.next()) {
+				Order order = new Order();
+				order.setMember_id(rs.getString("member_id"));
+				order.setOrder_id(rs.getString("order_id"));
+				order.setPrice(rs.getDouble("total_price"));
+				order.setQuantities(rs.getString("quantities"));
+				order.setTitle(rs.getString("titles"));
+				order.setOrder_date(rs.getString("order_date"));
+				OrderHistory.add(order);
+			}
+			
+		} catch (Exception e) {
+			System.out.print(".................userDetailsDB:" + e);
+		} finally {
+			conn.close();
+		}
+		return OrderHistory;
+	}
 }
