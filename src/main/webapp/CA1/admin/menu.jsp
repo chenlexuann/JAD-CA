@@ -16,6 +16,7 @@ Description: ST0510/JAD Assignment 1 -->
 	integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk"
 	crossorigin="anonymous">
 <script>
+	
 <%String role = session.getAttribute("sessUserRole") + "";
 String message = request.getParameter("statusCode");
 boolean admin = false;
@@ -25,8 +26,9 @@ if (role != null && role.equals("adminUser")) {
 </head>
 <body>
 	<nav class="navbar navbar-expand-lg navbar-light bg-light">
-		<a class="navbar-brand" href="home.jsp"> <img
-			src="../../img/kittyLogo.png" width="auto" height="50" alt="kitty books">
+		<a class="navbar-brand" href="../../home.jsp"> <img
+			src="../../img/kittyLogo.png" width="auto" height="50"
+			alt="kitty books">
 		</a>
 		<button class="navbar-toggler" type="button" data-toggle="collapse"
 			data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown"
@@ -45,18 +47,15 @@ if (role != null && role.equals("adminUser")) {
 				</li>
 				<li class="nav-item"><a class="nav-link active mx-2"
 					aria-current="page" href="../../home.jsp">Home</a></li>
-				<%
-				if (admin) {
-				%>
+			</ul>
+			<ul class="navbar-nav ml-auto">
 				<li class="nav-item"><a class="nav-link mx-2"
-					aria-current="page" href="menu.jsp" id="Admin">Admin</a></li>
-				<%
-				}
-				%>
+					href="../../cart.jsp"> <i class="fas fa-shopping-cart"></i>
+						Cart
+				</a></li>
 			</ul>
 		</div>
 	</nav>
-	<%@include file="header.html"%>
 	<%
 	String dm_userID = (String) session.getAttribute("sessUserID");
 	String dm_userRole = (String) session.getAttribute("sessUserRole");
@@ -71,12 +70,23 @@ if (role != null && role.equals("adminUser")) {
 	out.print("Your user role is: " + dm_userRole + "<br><br>");
 	%>
 
-	<button onclick="window.location.href='manageBooks.jsp'">Manage
+	<!-- <button onclick="window.location.href='manageBooks.jsp'">Manage
 		Books</button>
 	<button onclick="window.location.href='manageMembers.jsp'">Manage
 		Members</button>
-	</div>
+	<button onclick="window.location.href='manageMembers.jsp'">Manage
+		Sales</button> -->
+
+	<button onclick="window.location.href='manageBooks.jsp'"
+		style="font-size: 20px; padding: 10px 20px; display: block; margin-bottom: 10px;">Manage
+		Books</button>
+	<button onclick="window.location.href='manageMembers.jsp'"
+		style="font-size: 20px; padding: 10px 20px; display: block; margin-bottom: 10px;">Manage
+		Members</button>
+	<button onclick="window.location.href='manageSales.jsp'"
+		style="font-size: 20px; padding: 10px 20px; display: block; margin-bottom: 10px;">Manage
+		Sales</button>
+
 	<br>
-	<%@include file="footer.html"%>
 </body>
 </html>

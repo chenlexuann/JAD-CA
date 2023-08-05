@@ -18,6 +18,22 @@ Description: ST0510/JAD Assignment 1 -->
 <script>
 <%String role = session.getAttribute("sessUserRole") + "";
 String message = request.getParameter("statusCode");
+if (message != null && message.equals("success")){
+	%>
+	alert("Success!");
+	<%
+}
+if (message != null && message.equals("unsuccessful")){
+	%>
+	alert("Something went wrong!");
+	<%
+}
+if (message != null && message.equals("noChanges")){
+	%>
+	alert("No changes made.");
+	<%
+}
+
 boolean member = false;
 if (role != null && role.equals("memberUser")) {
 	member = true;
@@ -25,7 +41,7 @@ if (role != null && role.equals("memberUser")) {
 </head>
 <body>
 	<nav class="navbar navbar-expand-lg navbar-light bg-light">
-		<a class="navbar-brand" href="home.jsp"> <img
+		<a class="navbar-brand" href="../../home.jsp"> <img
 			src="../../img/kittyLogo.png" width="auto" height="50"
 			alt="kitty books">
 		</a>
@@ -56,28 +72,30 @@ if (role != null && role.equals("memberUser")) {
 		</div>
 	</nav>
 	<%@page import="java.sql.*"%>
-	<%@include file="header.html"%>
 	<%
 	String dm_userID = (String) session.getAttribute("sessUserID");
 	String dm_userRole = (String) session.getAttribute("sessUserRole");
 	String dm_loginStatus = (String) session.getAttribute("loginStatus");
 
 	if (dm_userID == null || !dm_loginStatus.equals("success")) {
-		response.sendRedirect("login.jsp?errCode=sessionTimeOut");
+		response.sendRedirect("../../login.jsp?errCode=sessionTimeOut");
 	}
 
 	out.print("<div align='center'><h2>View Account</h2>");
 	out.print("Welcome " + dm_userID + "!<br>");
 	out.print("Your user role is: " + dm_userRole + "<br><br>");
 
+	int id = 0;
 	String first_name = "";
 	String last_name = "";
 	String email = "";
 	String password = "";
+	String address = "";
+	String postalCode = "";
 
 	try {
 		// Step1: Load JDBC Driver
-		// Class.forName("com.mysql.cj.jdbc.Driver");
+		Class.forName("com.mysql.cj.jdbc.Driver");
 
 		// Step 2: Define Connection URL
 		String connURL = "jdbc:mysql://localhost/bookstore?user=root&password=root&serverTimezone=UTC";
@@ -96,10 +114,13 @@ if (role != null && role.equals("memberUser")) {
 		
 		// Step 6: Process Result
 		if (rs.next()) {
+			id = rs.getInt("member_id");
 			first_name = rs.getString("first_name");
 			last_name = rs.getString("last_name");
 			email = rs.getString("email");
 			password = rs.getString("password");
+			address = rs.getString("address");
+			postalCode = rs.getString("postalCode");
 		}
 
 		// Step 7: Close connection
@@ -115,7 +136,8 @@ if (role != null && role.equals("memberUser")) {
 			<table border="1" style="border-collapse: collapse;">
 				<tr>
 					<td style="padding: 5px;">first name:</td>
-					<td style="padding: 5px;"><span><%=first_name%></span></td>
+					<td style="padding: 5px;"><span><%=first_name%></span>
+					<input type="hidden" name="id" value="<%=id%>"></td>
 				</tr>
 				<tr>
 					<td style="padding: 5px;">last name:</td>
@@ -130,6 +152,14 @@ if (role != null && role.equals("memberUser")) {
 					<td style="padding: 5px;"><span><%=password%></span></td>
 				</tr>
 				<tr>
+					<td style="padding: 5px;">address:</td>
+					<td style="padding: 5px;"><span><%=address%></span></td>
+				</tr>
+								<tr>
+					<td style="padding: 5px;">postalCode:</td>
+					<td style="padding: 5px;"><span><%=postalCode%></span></td>
+				</tr>
+				<tr>
 					<td colspan="2" align="center" style="padding: 5px;"><input
 						type="submit" value="Edit" /></td>
 				</tr>
@@ -137,17 +167,15 @@ if (role != null && role.equals("memberUser")) {
 		</form>
 		<br>
 		<button style='background-color: red; color: white;'
-			onclick='confirmDelete()'>Delete Account</button>
+			onclick='confirmDelete("<%=email%>")'>Delete Account</button>
 	</div>
 	<br>
-
-	<%@include file="footer.html"%>
 </body>
 <script>
-	function confirmDelete() {
+	function confirmDelete(email) {
 		if(confirm("Are you sure you want to delete your account?")){ // if user clicks "OK"
-			var email = "<%=email%>"; // due to separation between server side and client side code
-			window.location.href = "deleteAccount.jsp?email=" + email;
+			var url = "<%=request.getContextPath()%>/deleteMemberServlet?email=" + email; 
+			window.location.href = url;
 		} else {
 			// do nothing
 		}

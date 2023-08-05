@@ -86,7 +86,7 @@ try {
 										class="form-input">
 									<div class="form-group d-flex justify-content-between">
 										<a class="btn bnt-sm btn-incre"
-											href="quantity-inc-dec?action=inc&id=<%=c.getBookId()%>"><i
+											href="quantity-inc-dec?action=inc&id=<%=c.getBookId()%>&quantityMax=<%=c.getBookQuantity()%>"><i
 											class="fas fa-plus-square"></i></a> <input type="text"
 											name="quantity" class="form-control"
 											value="<%=c.getCartQuantity()%>" readonly> <a

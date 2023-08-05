@@ -20,6 +20,28 @@ Description: ST0510/JAD Assignment 1 -->
 <script>
 <%String role = session.getAttribute("sessUserRole") + "";
 String message = request.getParameter("statusCode");
+if (message != null && message.equals("success")) {%>
+	alert("Success!");
+	<%}
+if (message != null && message.equals("unsuccessful")) {%>
+	alert("Something went wrong!");
+	<%}
+if (message != null && message.equals("duplicateBook")) {%>
+	alert("This book already exists.");
+	<%}
+if (message != null && message.equals("duplicateGenre")) {%>
+	alert("This genre already exists.");
+	<%}
+if (message != null && message.equals("duplicateAuthor")) {%>
+	alert("This author already exists.");
+	<%}
+if (message != null && message.equals("duplicatePublisher")) {%>
+	alert("This publisher already exists.");
+	<%}
+if (message != null && message.equals("incorrectFormat")) {%>
+	alert("Sorry, incorrect format. Please try again.");
+	<%}
+
 boolean admin = false;
 if (role != null && role.equals("adminUser")) {
 	admin = true;
@@ -27,7 +49,7 @@ if (role != null && role.equals("adminUser")) {
 </head>
 <body>
 	<nav class="navbar navbar-expand-lg navbar-light bg-light">
-		<a class="navbar-brand" href="home.jsp"> <img
+		<a class="navbar-brand" href="../../home.jsp"> <img
 			src="../../img/kittyLogo.png" width="auto" height="50"
 			alt="kitty books">
 		</a>
@@ -59,14 +81,13 @@ if (role != null && role.equals("adminUser")) {
 			</ul>
 		</div>
 	</nav>
-	<%@include file="header.html"%>
 	<%
 	String dm_userID = (String) session.getAttribute("sessUserID");
 	String dm_userRole = (String) session.getAttribute("sessUserRole");
 	String dm_loginStatus = (String) session.getAttribute("loginStatus");
 
 	if (dm_userID == null || !dm_loginStatus.equals("success")) {
-		response.sendRedirect("login.jsp?errCode=sessionTimeOut");
+		response.sendRedirect("../../login.jsp?errCode=sessionTimeOut");
 	}
 	%>
 
@@ -80,10 +101,17 @@ if (role != null && role.equals("adminUser")) {
 			new Author</button>
 		<button onclick="window.location.href='createPublisherForm.jsp'">Add
 			new Publisher</button>
-		<br> <br>
+		<br> <br> <select id="sortPopularity">
+			<option value="bestSelling">Best Selling</option>
+			<option value="leastSelling">Least Selling</option>
+			<option value="none" selected>None</option>
+		</select> <select id="filterStock">
+			<option value="lowStock">Low Stock</option>
+			<option value="oos">Out of Stock</option>
+			<option value="none" selected>None</option>
+		</select> <br> <br>
 
 		<%
-		String msg = "";
 		try {
 			int id, quantity;
 			String genre = "";
@@ -97,7 +125,7 @@ if (role != null && role.equals("adminUser")) {
 			String rating = "";
 
 			// Step1: Load JDBC Driver
-			// Class.forName("com.mysql.cj.jdbc.Driver");
+			Class.forName("com.mysql.cj.jdbc.Driver");
 
 			// Step 2: Define Connection URL
 			String connURL = "jdbc:mysql://localhost/bookstore?user=root&password=root&serverTimezone=UTC";
@@ -109,7 +137,16 @@ if (role != null && role.equals("adminUser")) {
 			Statement stmt = conn.createStatement();
 
 			// Step 5: Execute SQL Command
-			String sqlStr = "SELECT g.genre_name, a.author_name, p.publisher_name, b.* FROM books b	JOIN genres g ON b.genre_id = g.genre_id JOIN authors a ON b.author_id = a.author_id JOIN publishers p ON b.publisher_id = p.publisher_id ORDER BY b.book_id";
+			/* String selectedSort = request.getParameter("sort");
+			String sqlStr = "";
+			if ("bestSelling".equals(selectedSort)) {
+				sqlStr = "SELECT g.genre_name, a.author_name, p.publisher_name, b.* FROM books b JOIN genres g ON b.genre_id = g.genre_id JOIN authors a ON b.author_id = a.author_id JOIN publishers p ON b.publisher_id = p.publisher_id ORDER BY quantity DESC";
+			} else if ("leastSelling".equals(selectedSort)) {
+				sqlStr = "SELECT g.genre_name, a.author_name, p.publisher_name, b.* FROM books b JOIN genres g ON b.genre_id = g.genre_id JOIN authors a ON b.author_id = a.author_id JOIN publishers p ON b.publisher_id = p.publisher_id ORDER BY quantity ASC";
+			} else {
+				sqlStr = "SELECT g.genre_name, a.author_name, p.publisher_name, b.* FROM books b JOIN genres g ON b.genre_id = g.genre_id JOIN authors a ON b.author_id = a.author_id JOIN publishers p ON b.publisher_id = p.publisher_id ORDER BY b.book_id";
+			} */
+			String sqlStr = "SELECT g.genre_name, a.author_name, p.publisher_name, b.* FROM books b JOIN genres g ON b.genre_id = g.genre_id JOIN authors a ON b.author_id = a.author_id JOIN publishers p ON b.publisher_id = p.publisher_id ORDER BY b.book_id";
 			ResultSet rs = stmt.executeQuery(sqlStr);
 
 			// Step 6: Process Result
@@ -132,15 +169,20 @@ if (role != null && role.equals("adminUser")) {
 
 				out.print("<tr><td style='padding: 5px;'>" + id + "</td><td style='padding: 5px;'>" + genre
 				+ "</td><td style='padding: 5px;'>" + author + "</td><td style='padding: 5px;'>" + publisher
-				+ "</td><td style='padding: 5px;'>" + title + "</td><td style='padding: 5px;'>$" + price
-				+ "</td><td style='padding: 5px;'>" + quantity + "</td><td style='padding: 5px;'>" + publication_date
-				+ "</td><td style='padding: 5px;'>" + ISBN + "</td><td style='padding: 5px;'>" + rating + "</td>");
+				+ "</td><td style='padding: 5px;'>" + title + "</td><td style='padding: 5px;'>$" + price);
+				if (quantity <= 10) {
+			out.print("</td><td style='padding: 5px; background-color: red;'>" + quantity);
+				} else {
+			out.print("</td><td style='padding: 5px;'>" + quantity);
+				}
+				out.print("</td><td style='padding: 5px;'>" + publication_date + "</td><td style='padding: 5px;'>" + ISBN
+				+ "</td><td style='padding: 5px;'>" + rating + "</td>");
+
 				out.print("<td style='padding: 5px;'><a href='editBook.jsp?id=" + id + "&title=" + title + "&price=" + price
 				+ "&quantity=" + quantity + "&description=" + description + "&publication_date=" + publication_date
 				+ "&ISBN=" + ISBN + "&rating=" + rating
-				+ "'><button>edit</button></a></td><td style='padding: 5px;'><button style='background-color: red; color: white;' onclick='confirmDelete()'>delete</button></a></td></tr>");
-
-				msg = "deleteBook.jsp?id=" + id;
+				+ "'><button>edit</button></a></td><td style='padding: 5px;'><button style='background-color: red; color: white;' onclick='confirmDelete("
+				+ id + ")'>delete</button></a></td></tr>");
 			}
 			out.print("</table>");
 
@@ -158,16 +200,40 @@ if (role != null && role.equals("adminUser")) {
 	</div>
 	<br>
 	<br>
-	<%@include file="footer.html"%>
 </body>
 <script>
-	function confirmDelete() {
-		if(confirm("Are you sure you want to delete this book?")){ // if user clicks "OK"
-			var msg = <%=msg%> ; // due to separation between server side and client side code
-			window.location.href = msg;
+	function confirmDelete(id) {
+		if(confirm("Are you sure you want to delete this book?\nid:" + id)){ // if user clicks "OK"
+			var url = "<%=request.getContextPath()%>
+	/deleteBookServlet?id="
+					+ id;
+			window.location.href = url;
 		} else {
 			// do nothing
 		}
 	}
+
+	/* document.addEventListener("DOMContentLoaded", function() {
+		var sortPopularity = document.getElementById("sortPopularity");
+
+		sortDropdown.addEventListener("change", function() {
+			var selectedValue = sortPopularity.value;
+
+			// Redirect to the same page with the selected sort parameter
+			window.location.href = updateQueryStringParameter(
+					window.location.href, "sort", selectedValue);
+		});
+	});
+
+	function updateQueryStringParameter(uri, key, value) {
+		var re = new RegExp("([?&])" + key + "=.*?(&|$)", "i");
+		var separator = uri.indexOf("?") !== -1 ? "&" : "?";
+
+		if (uri.match(re)) {
+			return uri.replace(re, "$1" + key + "=" + value + "$2");
+		} else {
+			return uri + separator + key + "=" + value;
+		}
+	} */
 </script>
 </html>

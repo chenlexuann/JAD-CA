@@ -20,6 +20,27 @@ Description: ST0510/JAD Assignment 1 -->
 <script>
 <%String role = session.getAttribute("sessUserRole") + "";
 String message = request.getParameter("statusCode");
+if (message != null && message.equals("success")){
+	%>
+	alert("Success!");
+	<%
+}
+if (message != null && message.equals("unsuccessful")){
+	%>
+	alert("Something went wrong!");
+	<%
+}
+if (message != null && message.equals("duplicateEmail")){
+	%>
+	alert("This email is already in use.");
+	<%
+}
+if (message != null && message.equals("noChanges")){
+	%>
+	alert("No changes made.");
+	<%
+}
+
 boolean admin = false;
 if (role != null && role.equals("adminUser")) {
 	admin = true;
@@ -27,7 +48,7 @@ if (role != null && role.equals("adminUser")) {
 </head>
 <body>
 	<nav class="navbar navbar-expand-lg navbar-light bg-light">
-		<a class="navbar-brand" href="home.jsp"> <img
+		<a class="navbar-brand" href="../../home.jsp"> <img
 			src="../../img/kittyLogo.png" width="auto" height="50"
 			alt="kitty books">
 		</a>
@@ -59,14 +80,13 @@ if (role != null && role.equals("adminUser")) {
 			</ul>
 		</div>
 	</nav>
-	<%@include file="header.html"%>
 	<%
 	String dm_userID = (String) session.getAttribute("sessUserID");
 	String dm_userRole = (String) session.getAttribute("sessUserRole");
 	String dm_loginStatus = (String) session.getAttribute("loginStatus");
 
 	if (dm_userID == null || !dm_loginStatus.equals("success")) {
-		response.sendRedirect("login.jsp?errCode=sessionTimeOut");
+		response.sendRedirect("../../login.jsp?errCode=sessionTimeOut");
 	}
 	%>
 	<div align="center">
@@ -74,6 +94,10 @@ if (role != null && role.equals("adminUser")) {
 		<button onclick="window.location.href='createMemberForm.jsp'">Create
 			new Member</button>
 		<br> <br>
+		<select id="sortAddress">
+			<option value="idk">idk</option>
+			<option value="none" selected>None</option>
+		</select> <br> <br>
 
 		<%
 		String msg = "";
@@ -83,9 +107,11 @@ if (role != null && role.equals("adminUser")) {
 			String last_name = "";
 			String email = "";
 			String password = "";
+			String address = "";
+			String postalCode = "";
 
 			// Step1: Load JDBC Driver
-			// Class.forName("com.mysql.cj.jdbc.Driver");
+			Class.forName("com.mysql.cj.jdbc.Driver");
 
 			// Step 2: Define Connection URL
 			String connURL = "jdbc:mysql://localhost/bookstore?user=root&password=root&serverTimezone=UTC";
@@ -104,7 +130,7 @@ if (role != null && role.equals("adminUser")) {
 
 			out.print("<table border='1' align='center' style='border-collapse: collapse; text-align: center;'>");
 			out.print(
-			"<tr><th style='padding: 5px;'>id</th><th style='padding: 5px;'>first name</th><th style='padding: 5px;'>last name</th><th style='padding: 5px;'>email</th><th style='padding: 5px;'>password</th><th colspan='2' style='padding: 5px;'>action</th></tr>");
+			"<tr><th style='padding: 5px;'>id</th><th style='padding: 5px;'>first name</th><th style='padding: 5px;'>last name</th><th style='padding: 5px;'>email</th><th style='padding: 5px;'>password</th><th style='padding: 5px;'>address</th><th style='padding: 5px;'>postal code</th><th colspan='2' style='padding: 5px;'>action</th></tr>");
 
 			while (rs.next()) {
 				id = rs.getInt("member_id");
@@ -112,15 +138,15 @@ if (role != null && role.equals("adminUser")) {
 				last_name = rs.getString("last_name");
 				email = rs.getString("email");
 				password = rs.getString("password");
+				address = rs.getString("address");
+				postalCode = rs.getString("postalCode");
 
 				out.print("<tr><td style='padding: 5px;'>" + id + "</td><td style='padding: 5px;'>" + first_name
 				+ "</td><td style='padding: 5px;'>" + last_name + "</td><td style='padding: 5px;'>" + email
-				+ "</td><td style='padding: 5px;'>" + password + "</td>");
+				+ "</td><td style='padding: 5px;'>" + password + "</td><td style='padding: 5px;'>" + address + "</td><td style='padding: 5px;'>" + postalCode + "</td>");
 				out.print("<td style='padding: 5px;'><a href='editMember.jsp?id=" + id + "&first_name=" + first_name
-				+ "&last_name=" + last_name + "&email=" + email + "&password=" + password
-				+ "'><button>edit</button></a></td><td style='padding: 5px;'><button style='background-color: red; color: white;' onclick='confirmDelete()'>delete</button></a></td></tr>");
-
-				msg = "deleteMember.jsp?id=" + id;
+				+ "&last_name=" + last_name + "&email=" + email + "&password=" + password + "&address=" + address + "&postalCode=" + postalCode
+				+ "'><button>edit</button></a></td><td style='padding: 5px;'><button style='background-color: red; color: white;' onclick='confirmDelete(\"" + email + "\")'>delete</button></a></td></tr>");
 			}
 			out.print("</table>");
 
@@ -138,13 +164,12 @@ if (role != null && role.equals("adminUser")) {
 	</div>
 	<br>
 	<br>
-	<%@include file="footer.html"%>
 </body>
 <script>
-	function confirmDelete() {
-		if(confirm("Are you sure you want to delete this member?")){ // if user clicks "OK"
-			var msg = "<%=msg%>"; // due to separation between server side and client side code
-			window.location.href = msg;
+	function confirmDelete(email) {
+		if(confirm("Are you sure you want to delete this member?\nemail:" + email)){ // if user clicks "OK"
+			var url = "<%=request.getContextPath()%>/deleteMemberServlet?email=" + email; 
+			window.location.href = url;
 		} else {
 			// do nothing
 		}

@@ -3,7 +3,10 @@ package servlets;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.List;
+
 import model.*;
+import dbaccess.*;
 
 import java.io.IOException;
 import javax.servlet.ServletException;
@@ -18,33 +21,37 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/quantity-inc-dec")
 public class cartQuantityServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-       
-    /**
-     * @see HttpServlet#HttpServlet()
-     */
-    public cartQuantityServlet() {
-        super();
-        // TODO Auto-generated constructor stub
-    }
 
 	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+	 * @see HttpServlet#HttpServlet()
 	 */
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	public cartQuantityServlet() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+
+	/**
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
+	 *      response)
+	 */
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 		// TODO Auto-generated method stub
 //		response.getWriter().append("Served at: ").append(request.getContextPath());
 		try (PrintWriter out = response.getWriter()) {
 			String action = request.getParameter("action");
 			int id = Integer.parseInt(request.getParameter("id"));
 			ArrayList<Cart> cart_list = (ArrayList<Cart>) request.getSession().getAttribute("cart-list");
-
+			int quantityMax = Integer.parseInt(request.getParameter("quantityMax"));
 			if (action != null && id >= 1) {
 				if (action.equals("inc")) {
 					for (Cart c : cart_list) {
-						if (c.getBookId() == id) {
+						if (c.getBookId() == id && c.getCartQuantity() < quantityMax) {
 							int quantity = c.getCartQuantity();
 							quantity++;
 							c.setCartQuantity(quantity);
+							response.sendRedirect("cart.jsp");
+						} else {
 							response.sendRedirect("cart.jsp");
 						}
 					}
@@ -68,9 +75,11 @@ public class cartQuantityServlet extends HttpServlet {
 	}
 
 	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
+	 *      response)
 	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		doGet(request, response);
 	}
