@@ -1,4 +1,8 @@
 
+<!-- Author: Chen Lexuan
+Class: DIT/FT/2A/02
+Date: 6/8/2023
+Description: ST0510/JAD Assignment -->
 <%
 boolean loggedIn = false;
 boolean admin = false;
@@ -91,10 +95,10 @@ if (message != null && message.equals("err")) {
 			</a></li>
 			<li class="nav-item"><a class="nav-link mx-2"
 				aria-current="page" href="viewOrderHistory.jsp" id="OrderHistory">
-					Orders
-			</a></li>
+					Orders </a></li>
 			<%
 			}
+			if (loggedIn && member) {
 			%>
 		</ul>
 		<ul class="navbar-nav ml-auto">
@@ -103,5 +107,8 @@ if (message != null && message.equals("err")) {
 					class="fas fa-shopping-cart"></i> Cart
 			</a></li>
 		</ul>
+		<%
+		}
+		%>
 	</div>
 </nav>

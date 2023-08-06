@@ -40,12 +40,6 @@ Description: ST0510/JAD Assignment 1 -->
 				<li class="nav-item"><a class="nav-link active mx-2"
 					aria-current="page" href="../../home.jsp">Home</a></li>
 			</ul>
-			<ul class="navbar-nav ml-auto">
-				<li class="nav-item"><a class="nav-link mx-2"
-					href="../../cart.jsp"> <i class="fas fa-shopping-cart"></i>
-						Cart
-				</a></li>
-			</ul>
 		</div>
 	</nav>
 	<%@page import="java.sql.*"%>
@@ -69,6 +63,7 @@ Description: ST0510/JAD Assignment 1 -->
 	String description = request.getParameter("description");
 	String publication_date = request.getParameter("publication_date");
 	String ISBN = request.getParameter("ISBN");
+	String image_url = request.getParameter("image_url");
 	String rating = request.getParameter("rating");
 
 	try {
@@ -119,6 +114,7 @@ Description: ST0510/JAD Assignment 1 -->
 			description = rs.getString("description");
 			publication_date = rs.getString("publication_date");
 			ISBN = rs.getString("ISBN");
+			image_url = rs.getString("image_url");
 			rating = rs.getString("rating");
 		}
 
@@ -131,6 +127,7 @@ Description: ST0510/JAD Assignment 1 -->
 		String oldDescription = description;
 		String oldPublicationDate = publication_date;
 		String oldISBN = ISBN;
+		String oldImageURL = image_url;
 		String oldRating = rating;
 
 		while (rsGenre.next()) {
@@ -158,6 +155,13 @@ Description: ST0510/JAD Assignment 1 -->
 					<td style="padding: 5px;">id:</td>
 					<td style="padding: 5px;"><input type="text" name="id"
 						value="<%=id%>" readonly="readonly" style="padding: 3px;"></td>
+				</tr>
+				<tr>
+					<td style="padding: 5px;">image:</td>
+					<td style="padding: 5px;"><img src="<%=image_url%>"
+						height='100'><br><input type="text" name="image_url"
+						value="<%=image_url%>" style="padding: 3px;"><input
+						type="hidden" name="oldImageURL" value="<%=oldImageURL%>"></td>
 				</tr>
 				<tr>
 					<td style="padding: 5px;">genre:</td>

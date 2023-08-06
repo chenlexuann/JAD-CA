@@ -301,7 +301,7 @@ alert("Session timed out. Please log in again!");
 					<button>Sign up</button>
 				</form>
 				<div class="socials">
-					<a href="<%=request.getContextPath()%>/logoutUserServlet">use
+					<a href="home.jsp">use
 						as guest</a>
 				</div>
 			</div>

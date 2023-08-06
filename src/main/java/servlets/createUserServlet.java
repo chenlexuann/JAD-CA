@@ -4,7 +4,6 @@ package servlets;
 //Date: 8/6/2023
 //Description: ST0510/JAD Assignment 1
 
-import dbaccess.*;
 import java.io.*;
 import java.sql.*;
 import java.io.IOException;
@@ -21,8 +20,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import dbaccess.BookDAO;
-
 
 
 /**
@@ -35,6 +32,8 @@ public class createUserServlet extends HttpServlet {
        private String lastName = "";
        private String email = "";
        private String pwd = "";
+       private String address = "";
+       private String postalCode = "";
        
     /**
      * @see HttpServlet#HttpServlet()
@@ -49,26 +48,64 @@ public class createUserServlet extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
+		HttpSession session = request.getSession();
+		String dm_userRole = (String) session.getAttribute("sessUserRole");
+		
 		firstName = request.getParameter("firstName");
 	    lastName = request.getParameter("lastName");
 	    email = request.getParameter("email");
 	    pwd = request.getParameter("password");
+	    address = request.getParameter("address");
+	    postalCode = request.getParameter("postalCode");
 
 	    try {
-	    	UserDAO uDAO = new UserDAO();
+	        // Step 1: Load JDBC Driver
+	        Class.forName("com.mysql.cj.jdbc.Driver");
 
-	        int rowsAffected = uDAO.insertUser(firstName, lastName, email, pwd);
-	    	
+	        // Step 2: Define Connection URL
+	        String connURL = "jdbc:mysql://localhost/bookstore?user=root&password=root&serverTimezone=UTC";
+
+	        // Step 3: Establish connection to URL
+	        Connection conn = DriverManager.getConnection(connURL);
+
+	        // Step 4: Create Statement object
+	        ResultSet rs = null;
+
+	        // Step 5: Execute SQL Command
+	        String sqlStr = "INSERT INTO bookstore.members (first_name, last_name, email, password, address, postalCode) VALUES (?, ?, ?, ?, ?, ?);";
+	        PreparedStatement pstmt = conn.prepareStatement(sqlStr);
+
+	        pstmt.setString(1, firstName);
+	        pstmt.setString(2, lastName);
+	        pstmt.setString(3, email);
+	        pstmt.setString(4, pwd);
+	        pstmt.setString(5, address);
+	        pstmt.setString(6, postalCode);
+
+	        // Execute the SQL statement
+	        int rowsAffected = pstmt.executeUpdate();
+
 	        if (rowsAffected > 0) {
 	            // Registration successful
-	            response.sendRedirect("login.jsp?statusCode=success");
+	            if (dm_userRole == "adminUser") {
+					response.sendRedirect("CA1/admin/manageMembers.jsp?statusCode=success");
+				} else {
+		            response.sendRedirect("login.jsp?statusCode=success");
+				}
 	        } else {
 	            // Duplicate email
-	            response.sendRedirect("login.jsp?statusCode=duplicateEmail");
+	        	if (dm_userRole == "adminUser") {
+					response.sendRedirect("CA1/admin/manageMembers.jsp?statusCode=unsuccessful");
+				} else {
+		            response.sendRedirect("login.jsp?statusCode=duplicateEmail");
+				}
 	        }
+
+	        // Close the connection
+	        conn.close();
 	    } catch (SQLIntegrityConstraintViolationException e) {
 	        // Duplicate entry for email
-	        response.sendRedirect("register_member.jsp?statusCode=duplicateEmail");
+	        response.sendRedirect("login.jsp?statusCode=duplicateEmail");
 	    } catch (Exception e) {
 	        PrintWriter out = response.getWriter();
 	        System.out.println("Error: " + e);

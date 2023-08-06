@@ -20,26 +20,18 @@ Description: ST0510/JAD Assignment 1 -->
 <script>
 <%String role = session.getAttribute("sessUserRole") + "";
 String message = request.getParameter("statusCode");
-if (message != null && message.equals("success")){
-	%>
+if (message != null && message.equals("success")) {%>
 	alert("Success!");
-	<%
-}
-if (message != null && message.equals("unsuccessful")){
-	%>
+	<%}
+if (message != null && message.equals("unsuccessful")) {%>
 	alert("Something went wrong!");
-	<%
-}
-if (message != null && message.equals("duplicateEmail")){
-	%>
+	<%}
+if (message != null && message.equals("duplicateEmail")) {%>
 	alert("This email is already in use.");
-	<%
-}
-if (message != null && message.equals("noChanges")){
-	%>
+	<%}
+if (message != null && message.equals("noChanges")) {%>
 	alert("No changes made.");
-	<%
-}
+	<%}
 
 boolean admin = false;
 if (role != null && role.equals("adminUser")) {
@@ -91,13 +83,29 @@ if (role != null && role.equals("adminUser")) {
 	%>
 	<div align="center">
 		<h2 align="center">Manage Members</h2>
+		<br>
+		<div>
+			<input type="text" id="emailSearch"
+				placeholder="Search by Member Email"> <input type="text"
+				id="addressSearch" placeholder="Search by Address">
+			<button id="searchButton">Search</button>
+		</div>
+		<br> <select id="sortPostalCode" onchange="updateSort()">
+			<option name="sort" value="none"
+				<%if ("none".equals(request.getParameter("sort")))
+	out.print("selected");%>>None</option>
+			<option name="sort" value="ascending"
+				<%if ("ascending".equals(request.getParameter("sort")))
+	out.print("selected");%>>Ascending
+				Postal Code</option>
+			<option name="sort" value="descending"
+				<%if ("descending".equals(request.getParameter("sort")))
+	out.print("selected");%>>Descending
+				Postal Code</option>
+		</select><br> <br>
 		<button onclick="window.location.href='createMemberForm.jsp'">Create
 			new Member</button>
 		<br> <br>
-		<select id="sortAddress">
-			<option value="idk">idk</option>
-			<option value="none" selected>None</option>
-		</select> <br> <br>
 
 		<%
 		String msg = "";
@@ -123,12 +131,23 @@ if (role != null && role.equals("adminUser")) {
 			Statement stmt = conn.createStatement();
 
 			// Step 5: Execute SQL Command
+			String selectedSort = request.getParameter("sort");
 			String sqlStr = "SELECT * FROM members";
+			String orderByClause = "";
+
+			if ("ascending".equals(selectedSort)) {
+				orderByClause = " ORDER BY postalCode ASC";
+			} else if ("descending".equals(selectedSort)) {
+				orderByClause = " ORDER BY postalCode DESC";
+			}
+
+			sqlStr += orderByClause;
 			ResultSet rs = stmt.executeQuery(sqlStr);
 
 			// Step 6: Process Result
 
-			out.print("<table border='1' align='center' style='border-collapse: collapse; text-align: center;'>");
+			out.print(
+			"<table id='membersTable' border='1' align='center' style='border-collapse: collapse; text-align: center;'><tbody>");
 			out.print(
 			"<tr><th style='padding: 5px;'>id</th><th style='padding: 5px;'>first name</th><th style='padding: 5px;'>last name</th><th style='padding: 5px;'>email</th><th style='padding: 5px;'>password</th><th style='padding: 5px;'>address</th><th style='padding: 5px;'>postal code</th><th colspan='2' style='padding: 5px;'>action</th></tr>");
 
@@ -143,12 +162,15 @@ if (role != null && role.equals("adminUser")) {
 
 				out.print("<tr><td style='padding: 5px;'>" + id + "</td><td style='padding: 5px;'>" + first_name
 				+ "</td><td style='padding: 5px;'>" + last_name + "</td><td style='padding: 5px;'>" + email
-				+ "</td><td style='padding: 5px;'>" + password + "</td><td style='padding: 5px;'>" + address + "</td><td style='padding: 5px;'>" + postalCode + "</td>");
+				+ "</td><td style='padding: 5px;'>" + password + "</td><td style='padding: 5px;'>" + address
+				+ "</td><td style='padding: 5px;'>" + postalCode + "</td>");
 				out.print("<td style='padding: 5px;'><a href='editMember.jsp?id=" + id + "&first_name=" + first_name
-				+ "&last_name=" + last_name + "&email=" + email + "&password=" + password + "&address=" + address + "&postalCode=" + postalCode
-				+ "'><button>edit</button></a></td><td style='padding: 5px;'><button style='background-color: red; color: white;' onclick='confirmDelete(\"" + email + "\")'>delete</button></a></td></tr>");
+				+ "&last_name=" + last_name + "&email=" + email + "&password=" + password + "&address=" + address
+				+ "&postalCode=" + postalCode
+				+ "'><button>edit</button></a></td><td style='padding: 5px;'><button style='background-color: red; color: white;' onclick='confirmDelete(\""
+				+ email + "\")'>delete</button></a></td></tr>");
 			}
-			out.print("</table>");
+			out.print("</tbody></table>");
 
 			// Step 7: Close connection
 			conn.close();
@@ -168,11 +190,56 @@ if (role != null && role.equals("adminUser")) {
 <script>
 	function confirmDelete(email) {
 		if(confirm("Are you sure you want to delete this member?\nemail:" + email)){ // if user clicks "OK"
-			var url = "<%=request.getContextPath()%>/deleteMemberServlet?email=" + email; 
+			var url = "<%=request.getContextPath()%>/deleteMemberServlet?email=" + email;
 			window.location.href = url;
 		} else {
 			// do nothing
 		}
 	}
+
+	function updateSort() {
+		var selectedSort = document.getElementById("sortPostalCode").value;
+		var currentURL = window.location.href;
+
+		// update URL query parameters "sort" with selected options
+		var updatedURL = updateQueryStringParameter(currentURL, "sort",
+				selectedSort);
+
+		// redirect to updated URL
+		window.location.href = updatedURL;
+	}
+
+	function updateQueryStringParameter(uri, key, value) {
+		var re = new RegExp("([?&])" + key + "=.*?(&|$)", "i");
+		var separator = uri.indexOf("?") !== -1 ? "&" : "?";
+
+		if (uri.match(re)) {
+			return uri.replace(re, "$1" + key + "=" + value + "$2");
+		} else {
+			return uri + separator + key + "=" + value;
+		}
+	}
+
+	$('#searchButton').click(
+			function() {
+				var email = $('#emailSearch').val().toLowerCase();
+				var address = $('#addressSearch').val().toLowerCase();
+
+				$('#membersTable tr:not(:first-child)').each(
+						function() {
+							var row = $(this);
+							var membersEmail = row.find('td:nth-child(4)')
+									.text().toLowerCase();
+							var rowAddress = row.find('td:nth-child(6)').text()
+									.toLowerCase();
+
+							if (membersEmail.includes(email)
+									&& rowAddress.includes(address)) {
+								row.show();
+							} else {
+								row.hide();
+							}
+						});
+			});
 </script>
 </html>

@@ -41,7 +41,7 @@ public class deleteBookServlet extends HttpServlet {
 
 		try {
 			// Step1: Load JDBC Driver
-			// Class.forName("com.mysql.cj.jdbc.Driver");
+			Class.forName("com.mysql.cj.jdbc.Driver");
 
 			// Step 2: Define Connection URL
 			String connURL = "jdbc:mysql://localhost/bookstore?user=root&password=root&serverTimezone=UTC";

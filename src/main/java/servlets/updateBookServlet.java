@@ -19,6 +19,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.Part;
 
 /**
  * Servlet implementation class updateBookServlet
@@ -63,15 +64,25 @@ public class updateBookServlet extends HttpServlet {
 		String oldPublicationDate = request.getParameter("oldPublicationDate");
 		String ISBN = request.getParameter("ISBN");
 		String oldISBN = request.getParameter("oldISBN");
+		String image_url = request.getParameter("image_url");
+		String oldImageURL = request.getParameter("oldImageURL");
 		String rating = request.getParameter("rating");
 		String oldRating = request.getParameter("oldRating");
 
-		out.print("<div align='center'><h2>Update Book</h2>");
+		/*
+		 * Part imagePart = request.getPart("imageFile"); String imageFileName = null;
+		 * 
+		 * if (imagePart != null) { String imageName = System.currentTimeMillis() + "_"
+		 * + imagePart.getSubmittedFileName(); String imagePath =
+		 * "C:\\Users\\Angie Toh\\Downloads\\JAD images" + imageName;
+		 * imagePart.write(imagePath); imageFileName = imageName; }
+		 */
+
 		if (genre.equals(oldGenre) && author.equals(oldAuthor) && publisher.equals(oldPublisher)
 				&& title.equals(oldTitle) && price.equals(oldPrice) && quantity.equals(oldQuantity)
 				&& description.equals(oldDescription) && publication_date.equals(oldPublicationDate)
-				&& ISBN.equals(oldISBN) && rating.equals(oldRating)) {
-			out.print("No changes made");
+				&& ISBN.equals(oldISBN) && image_url.equals(oldImageURL) && rating.equals(oldRating)) {
+			response.sendRedirect("CA1/admin/manageBooks.jsp?statusCode=noChanges");
 		} else {
 			try {
 				// Step1: Load JDBC Driver
@@ -87,7 +98,8 @@ public class updateBookServlet extends HttpServlet {
 				// Statement stmt = conn.createStatement();
 
 				// Step 5: Execute SQL Command
-				String sqlStr = "UPDATE books AS b SET genre_id = (SELECT genre_id FROM genres WHERE genre_name = ? LIMIT 1), author_id = (SELECT author_id FROM authors WHERE author_name = ? LIMIT 1), publisher_id = (SELECT publisher_id FROM publishers WHERE publisher_name = ? LIMIT 1), title = ?, price = ?, quantity = ?, description = ?, publication_date = ?, ISBN = ?, rating = ? WHERE book_id = ?;";
+				String sqlStr = "UPDATE books AS b SET genre_id = (SELECT genre_id FROM genres WHERE genre_name = ? LIMIT 1), author_id = (SELECT author_id FROM authors WHERE author_name = ? LIMIT 1), publisher_id = (SELECT publisher_id FROM publishers WHERE publisher_name = ? LIMIT 1), title = ?, price = ?, quantity = ?, description = ?, publication_date = ?, ISBN = ?, image_url = ?, rating = ? WHERE book_id = ?;";
+				// String sqlStr = "UPDATE books AS b SET genre_id = ?, author_id = ?, publisher_id = ?, title = ?, price = ?, quantity = ?, description = ?, publication_date = ?, ISBN = ?, rating = ?, image_url = ? WHERE book_id = ?";
 				PreparedStatement pstmt = conn.prepareStatement(sqlStr);
 				pstmt.setString(1, genre);
 				pstmt.setString(2, author);
@@ -98,8 +110,10 @@ public class updateBookServlet extends HttpServlet {
 				pstmt.setString(7, description);
 				pstmt.setString(8, publication_date);
 				pstmt.setString(9, ISBN);
-				pstmt.setString(10, rating);
-				pstmt.setString(11, id);
+				pstmt.setString(10, image_url);
+				pstmt.setString(11, rating);
+				// pstmt.setString(11, imageFileName); // Set the image file name
+				pstmt.setString(12, id);
 
 				int nRowsAffected = pstmt.executeUpdate();
 
@@ -115,19 +129,19 @@ public class updateBookServlet extends HttpServlet {
 					response.sendRedirect("CA1/admin/manageBooks.jsp?statusCode=unsuccessful");
 				}
 
-				while (rs.next()) {
-					out.print("<br><br>id: " + rs.getString("book_id") + "<br>");
-					out.print("genre: " + rs.getString("genre_name") + "<br>");
-					out.print("author: " + rs.getString("author_name") + "<br>");
-					out.print("publisher: " + rs.getString("publisher_name") + "<br>");
-					out.print("title: " + rs.getString("title") + "<br>");
-					out.print("price: " + rs.getString("price") + "<br>");
-					out.print("quantity: " + rs.getString("quantity") + "<br>");
-					out.print("description: " + rs.getString("description") + "<br>");
-					out.print("publication_date: " + rs.getString("publication_date") + "<br>");
-					out.print("ISBN: " + rs.getString("ISBN") + "<br>");
-					out.print("rating: " + rs.getString("rating"));
-				}
+				/*
+				 * while (rs.next()) { out.print("<br><br>id: " + rs.getString("book_id") +
+				 * "<br>"); out.print("genre: " + rs.getString("genre_name") + "<br>");
+				 * out.print("author: " + rs.getString("author_name") + "<br>");
+				 * out.print("publisher: " + rs.getString("publisher_name") + "<br>");
+				 * out.print("title: " + rs.getString("title") + "<br>"); out.print("price: " +
+				 * rs.getString("price") + "<br>"); out.print("quantity: " +
+				 * rs.getString("quantity") + "<br>"); out.print("description: " +
+				 * rs.getString("description") + "<br>"); out.print("publication_date: " +
+				 * rs.getString("publication_date") + "<br>"); out.print("ISBN: " +
+				 * rs.getString("ISBN") + "<br>"); out.print("rating: " +
+				 * rs.getString("rating")); }
+				 */
 
 				// Step 7: Close connection
 				conn.close();

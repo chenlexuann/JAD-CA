@@ -2,8 +2,8 @@
 	pageEncoding="UTF-8"%>
 <!-- Author: Chen Lexuan
 Class: DIT/FT/2A/02
-Date: 8/6/2023
-Description: ST0510/JAD Assignment 1 -->
+Date: 6/8/2023
+Description: ST0510/JAD Assignment -->
 <%@ page import="java.util.*"%>
 <%@ page import="model.*"%>
 <%@ page import="dbaccess.*"%>

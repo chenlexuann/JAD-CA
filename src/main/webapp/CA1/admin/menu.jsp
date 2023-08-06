@@ -48,12 +48,6 @@ if (role != null && role.equals("adminUser")) {
 				<li class="nav-item"><a class="nav-link active mx-2"
 					aria-current="page" href="../../home.jsp">Home</a></li>
 			</ul>
-			<ul class="navbar-nav ml-auto">
-				<li class="nav-item"><a class="nav-link mx-2"
-					href="../../cart.jsp"> <i class="fas fa-shopping-cart"></i>
-						Cart
-				</a></li>
-			</ul>
 		</div>
 	</nav>
 	<%
@@ -87,6 +81,8 @@ if (role != null && role.equals("adminUser")) {
 		style="font-size: 20px; padding: 10px 20px; display: block; margin-bottom: 10px;">Manage
 		Sales</button>
 
+
+	</div>
 	<br>
 </body>
 </html>

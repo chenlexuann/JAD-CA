@@ -50,6 +50,7 @@ public class createBookServlet extends HttpServlet {
 		String description = request.getParameter("description");
 		String publication_date = request.getParameter("publication_date");
 		String ISBN = request.getParameter("ISBN");
+		String image_url = request.getParameter("image_url");
 		String rating = request.getParameter("rating");
 
 		try {
@@ -66,7 +67,7 @@ public class createBookServlet extends HttpServlet {
 			// Statement stmt = conn.createStatement();
 
 			// Step 5: Execute SQL Command
-			String sqlStr = "INSERT INTO books (genre_id, author_id, publisher_id, title, price, quantity, description, publication_date, ISBN, rating) SELECT (SELECT genre_id FROM genres WHERE genre_name=? LIMIT 1),(SELECT author_id FROM authors WHERE author_name=? LIMIT 1), (SELECT publisher_id FROM publishers WHERE publisher_name=? LIMIT 1),?,?,?,?,?,?,?";
+			String sqlStr = "INSERT INTO books (genre_id, author_id, publisher_id, title, price, quantity, description, publication_date, ISBN, image_url, rating) SELECT (SELECT genre_id FROM genres WHERE genre_name=? LIMIT 1),(SELECT author_id FROM authors WHERE author_name=? LIMIT 1), (SELECT publisher_id FROM publishers WHERE publisher_name=? LIMIT 1),?,?,?,?,?,?,?,?";
 			PreparedStatement pstmt = conn.prepareStatement(sqlStr);
 			pstmt.setString(1, genre);
 			pstmt.setString(2, author);
@@ -77,7 +78,8 @@ public class createBookServlet extends HttpServlet {
 			pstmt.setString(7, description);
 			pstmt.setString(8, publication_date);
 			pstmt.setString(9, ISBN);
-			pstmt.setString(10, rating);
+			pstmt.setString(10, image_url);
+			pstmt.setString(11, rating);
 
 			int nRowsAffected = pstmt.executeUpdate();
 

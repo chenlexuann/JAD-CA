@@ -1,5 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
+	<!-- Author: Chen Lexuan
+Class: DIT/FT/2A/02
+Date: 6/8/2023
+Description: ST0510/JAD Assignment -->
 <!DOCTYPE html>
 <html>
 <head>
@@ -37,15 +41,15 @@ table td {
 			</tr>
 			<tr>
 				<td><b>Subtotal:</b></td>
-				<td>${transaction.amount.details.subtotal}USD</td>
+				<td>${transaction.amount.details.subtotal} SGD</td>
 			</tr>
 			<tr>
 				<td><b>Tax:</b></td>
-				<td>${transaction.amount.details.tax}USD</td>
+				<td>${transaction.amount.details.tax} SGD</td>
 			</tr>
 			<tr>
 				<td><b>Total:</b></td>
-				<td>${transaction.amount.total}USD</td>
+				<td>${transaction.amount.total} SGD</td>
 			</tr>
 		</table>
 		<form action="home.jsp">

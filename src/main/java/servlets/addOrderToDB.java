@@ -1,4 +1,8 @@
 package servlets;
+//Author: Chen Lexuan
+//Class: DIT/FT/2A/02
+//Date: 6/8/2023
+//Description: ST0510/JAD Assignment 2
 
 import java.util.*;
 import model.*;

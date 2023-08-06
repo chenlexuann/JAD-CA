@@ -26,6 +26,9 @@ if (message != null && message.equals("success")) {%>
 if (message != null && message.equals("unsuccessful")) {%>
 	alert("Something went wrong!");
 	<%}
+if (message != null && message.equals("noChanges")) {%>
+	alert("No changes made.");
+	<%}
 if (message != null && message.equals("duplicateBook")) {%>
 	alert("This book already exists.");
 	<%}
@@ -93,6 +96,40 @@ if (role != null && role.equals("adminUser")) {
 
 	<div align="center">
 		<h2 align="center">Manage Books</h2>
+		<br>
+		<div>
+			<input type="text" id="titleSearch"
+				placeholder="Search by Title"> <input type="text"
+				id="isbnSearch" placeholder="Search by ISBN">
+			<button id="searchButton">Search</button>
+		</div>
+		<br>
+		<select id="sortPopularity" onchange="updateSortAndFilter()">
+			<option name="sort" value="none"
+				<%if ("none".equals(request.getParameter("sort")))
+	out.print("selected");%>>None</option>
+			<option name="sort" value="bestSelling"
+				<%if ("bestSelling".equals(request.getParameter("sort")))
+	out.print("selected");%>>Best
+				Selling</option>
+			<option name="sort" value="leastSelling"
+				<%if ("leastSelling".equals(request.getParameter("sort")))
+	out.print("selected");%>>Least
+				Selling</option>
+		</select> <select id="filterStock" onchange="updateSortAndFilter()">
+			<option name="filter" value="none"
+				<%if ("none".equals(request.getParameter("filter")))
+	out.print("selected");%>>None</option>
+			<option name="filter" value="lowStock"
+				<%if ("lowStock".equals(request.getParameter("filter")))
+	out.print("selected");%>>Low
+				Stock</option>
+			<option name="filter" value="oos"
+				<%if ("oos".equals(request.getParameter("filter")))
+	out.print("selected");%>>Out
+				of Stock</option>
+		</select> <br>
+		<br>
 		<button onclick="window.location.href='createBookForm.jsp'">Create
 			new Book</button>
 		<button onclick="window.location.href='createGenreForm.jsp'">Create
@@ -101,15 +138,8 @@ if (role != null && role.equals("adminUser")) {
 			new Author</button>
 		<button onclick="window.location.href='createPublisherForm.jsp'">Add
 			new Publisher</button>
-		<br> <br> <select id="sortPopularity">
-			<option value="bestSelling">Best Selling</option>
-			<option value="leastSelling">Least Selling</option>
-			<option value="none" selected>None</option>
-		</select> <select id="filterStock">
-			<option value="lowStock">Low Stock</option>
-			<option value="oos">Out of Stock</option>
-			<option value="none" selected>None</option>
-		</select> <br> <br>
+		<br>
+		<br>
 
 		<%
 		try {
@@ -122,7 +152,9 @@ if (role != null && role.equals("adminUser")) {
 			String description = "";
 			String publication_date = "";
 			String ISBN = "";
+			String image_url = "";
 			String rating = "";
+			String total_sold = "";
 
 			// Step1: Load JDBC Driver
 			Class.forName("com.mysql.cj.jdbc.Driver");
@@ -137,22 +169,40 @@ if (role != null && role.equals("adminUser")) {
 			Statement stmt = conn.createStatement();
 
 			// Step 5: Execute SQL Command
-			/* String selectedSort = request.getParameter("sort");
-			String sqlStr = "";
+			String selectedSort = request.getParameter("sort");
+			String selectedFilter = request.getParameter("filter");
+			String sqlStr = "SELECT g.genre_name, a.author_name, p.publisher_name, b.*, SUM(oi.quantity) AS total_sold "
+			+ "FROM books b " + "JOIN genres g ON b.genre_id = g.genre_id "
+			+ "JOIN authors a ON b.author_id = a.author_id " + "JOIN publishers p ON b.publisher_id = p.publisher_id "
+			+ "LEFT JOIN order_items oi ON b.book_id = oi.book_id";
+			String groupByClause = " GROUP BY b.book_id";
+			String orderByClause = "", whereClause = "";
+
 			if ("bestSelling".equals(selectedSort)) {
-				sqlStr = "SELECT g.genre_name, a.author_name, p.publisher_name, b.* FROM books b JOIN genres g ON b.genre_id = g.genre_id JOIN authors a ON b.author_id = a.author_id JOIN publishers p ON b.publisher_id = p.publisher_id ORDER BY quantity DESC";
+				orderByClause = " ORDER BY total_sold DESC";
 			} else if ("leastSelling".equals(selectedSort)) {
-				sqlStr = "SELECT g.genre_name, a.author_name, p.publisher_name, b.* FROM books b JOIN genres g ON b.genre_id = g.genre_id JOIN authors a ON b.author_id = a.author_id JOIN publishers p ON b.publisher_id = p.publisher_id ORDER BY quantity ASC";
+				orderByClause = " ORDER BY total_sold ASC";
 			} else {
-				sqlStr = "SELECT g.genre_name, a.author_name, p.publisher_name, b.* FROM books b JOIN genres g ON b.genre_id = g.genre_id JOIN authors a ON b.author_id = a.author_id JOIN publishers p ON b.publisher_id = p.publisher_id ORDER BY b.book_id";
-			} */
-			String sqlStr = "SELECT g.genre_name, a.author_name, p.publisher_name, b.* FROM books b JOIN genres g ON b.genre_id = g.genre_id JOIN authors a ON b.author_id = a.author_id JOIN publishers p ON b.publisher_id = p.publisher_id ORDER BY b.book_id";
+				orderByClause = " ORDER BY b.book_id";
+			}
+
+			if ("lowStock".equals(selectedFilter)) {
+				whereClause = " WHERE b.quantity <= 10";
+			} else if ("oos".equals(selectedFilter)) {
+				whereClause = " WHERE b.quantity = 0";
+			}
+
+			sqlStr += whereClause;
+			sqlStr += groupByClause;
+			sqlStr += orderByClause;
+
+			// String sqlStr = "SELECT g.genre_name, a.author_name, p.publisher_name, b.* FROM books b JOIN genres g ON b.genre_id = g.genre_id JOIN authors a ON b.author_id = a.author_id JOIN publishers p ON b.publisher_id = p.publisher_id ORDER BY b.book_id";
 			ResultSet rs = stmt.executeQuery(sqlStr);
 
 			// Step 6: Process Result
-			out.print("<table border='1' align='center' style='border-collapse: collapse; text-align: center;'>");
+			out.print("<table id='booksTable' border='1' align='center' style='border-collapse: collapse; text-align: center;'><tbody>");
 			out.print(
-			"<tr><th style='padding: 5px;'>id</th><th style='padding: 5px;'>genre</th><th style='padding: 5px;'>author</th><th style='padding: 5px;'>publisher</th><th style='padding: 5px;'>title</th><th style='padding: 5px;'>price</th><th style='padding: 5px;'>quantity</th><th style='padding: 5px;'>publication date</th><th style='padding: 5px;'>ISBN</th><th style='padding: 5px;'>rating</th><th colspan='2' style='padding: 5px;'>action</th></tr>");
+			"<tr><th style='padding: 5px;'>id</th><th style='padding: 5px;'>image</th><th style='padding: 5px;'>genre</th><th style='padding: 5px;'>author</th><th style='padding: 5px;'>publisher</th><th style='padding: 5px;'>title</th><th style='padding: 5px;'>price</th><th style='padding: 5px;'>quantity</th><th style='padding: 5px;'>publication date</th><th style='padding: 5px;'>ISBN</th><th style='padding: 5px;'>rating</th><th style='padding: 5px;'>total sold</th><th colspan='2' style='padding: 5px;'>action</th></tr>");
 
 			while (rs.next()) {
 				id = rs.getInt("book_id");
@@ -165,18 +215,27 @@ if (role != null && role.equals("adminUser")) {
 				description = rs.getString("description");
 				publication_date = rs.getString("publication_date");
 				ISBN = rs.getString("ISBN");
+				image_url = rs.getString("image_url");
 				rating = rs.getString("rating");
+				total_sold = rs.getString("total_sold");
+				if (total_sold == null) {
+			total_sold = "0";
+				}
 
-				out.print("<tr><td style='padding: 5px;'>" + id + "</td><td style='padding: 5px;'>" + genre
-				+ "</td><td style='padding: 5px;'>" + author + "</td><td style='padding: 5px;'>" + publisher
-				+ "</td><td style='padding: 5px;'>" + title + "</td><td style='padding: 5px;'>$" + price);
-				if (quantity <= 10) {
+				out.print("<tr><td style='padding: 5px;'>" + id + "</td><td style='padding: 5px;'><img src='" + image_url
+				+ "' height='100'></td><td style='padding: 5px;'>" + genre + "</td><td style='padding: 5px;'>" + author
+				+ "</td><td style='padding: 5px;'>" + publisher + "</td><td style='padding: 5px;'>" + title
+				+ "</td><td style='padding: 5px;'>$" + price);
+				if (quantity == 0) {
 			out.print("</td><td style='padding: 5px; background-color: red;'>" + quantity);
+				} else if (quantity <= 10) {
+			out.print("</td><td style='padding: 5px; background-color: orange;'>" + quantity);
 				} else {
 			out.print("</td><td style='padding: 5px;'>" + quantity);
 				}
 				out.print("</td><td style='padding: 5px;'>" + publication_date + "</td><td style='padding: 5px;'>" + ISBN
-				+ "</td><td style='padding: 5px;'>" + rating + "</td>");
+				+ "</td><td style='padding: 5px;'>" + rating + "</td><td style='padding: 5px;'>" + total_sold
+				+ "</td>");
 
 				out.print("<td style='padding: 5px;'><a href='editBook.jsp?id=" + id + "&title=" + title + "&price=" + price
 				+ "&quantity=" + quantity + "&description=" + description + "&publication_date=" + publication_date
@@ -184,7 +243,7 @@ if (role != null && role.equals("adminUser")) {
 				+ "'><button>edit</button></a></td><td style='padding: 5px;'><button style='background-color: red; color: white;' onclick='confirmDelete("
 				+ id + ")'>delete</button></a></td></tr>");
 			}
-			out.print("</table>");
+			out.print("</tbody></table>");
 
 			// Step 7: Close connection
 			conn.close();
@@ -203,27 +262,28 @@ if (role != null && role.equals("adminUser")) {
 </body>
 <script>
 	function confirmDelete(id) {
-		if(confirm("Are you sure you want to delete this book?\nid:" + id)){ // if user clicks "OK"
-			var url = "<%=request.getContextPath()%>
-	/deleteBookServlet?id="
-					+ id;
+		if(confirm("Are you sure you want to delete this book?\nid: " + id)){ // if user clicks "OK"
+			var url = "<%=request.getContextPath()%>/deleteBookServlet?id="	+ id;
 			window.location.href = url;
 		} else {
 			// do nothing
 		}
 	}
 
-	/* document.addEventListener("DOMContentLoaded", function() {
-		var sortPopularity = document.getElementById("sortPopularity");
+	function updateSortAndFilter() {
+		var selectedSort = document.getElementById("sortPopularity").value;
+		var selectedFilter = document.getElementById("filterStock").value;
+		var currentURL = window.location.href;
 
-		sortDropdown.addEventListener("change", function() {
-			var selectedValue = sortPopularity.value;
+		// update URL query parameters "sort" and "filter" with selected options
+		var updatedURL = updateQueryStringParameter(currentURL, "sort",
+				selectedSort);
+		updatedURL = updateQueryStringParameter(updatedURL, "filter",
+				selectedFilter);
 
-			// Redirect to the same page with the selected sort parameter
-			window.location.href = updateQueryStringParameter(
-					window.location.href, "sort", selectedValue);
-		});
-	});
+		// redirect to updated URL
+		window.location.href = updatedURL;
+	}
 
 	function updateQueryStringParameter(uri, key, value) {
 		var re = new RegExp("([?&])" + key + "=.*?(&|$)", "i");
@@ -234,6 +294,23 @@ if (role != null && role.equals("adminUser")) {
 		} else {
 			return uri + separator + key + "=" + value;
 		}
-	} */
+	}
+	
+	$('#searchButton').click(function () {
+        var title = $('#titleSearch').val().toLowerCase();
+        var isbn = $('#isbnSearch').val().toLowerCase();
+
+        $('#booksTable tr:not(:first-child)').each(function () {
+            var row = $(this);
+            var bookTitle = row.find('td:nth-child(6)').text().toLowerCase();
+            var rowISBN = row.find('td:nth-child(10)').text().toLowerCase();
+
+            if (bookTitle.includes(title) && rowISBN.includes(isbn)) {
+                row.show();
+            } else {
+                row.hide();
+            }
+        });
+    });
 </script>
 </html>

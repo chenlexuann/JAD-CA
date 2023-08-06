@@ -40,12 +40,6 @@ Description: ST0510/JAD Assignment 1 -->
 				<li class="nav-item"><a class="nav-link active mx-2"
 					aria-current="page" href="../../home.jsp">Home</a></li>
 			</ul>
-			<ul class="navbar-nav ml-auto">
-				<li class="nav-item"><a class="nav-link mx-2"
-					href="../../cart.jsp"> <i class="fas fa-shopping-cart"></i>
-						Cart
-				</a></li>
-			</ul>
 		</div>
 	</nav>
 	<%@page import="java.sql.*"%>
@@ -151,6 +145,7 @@ Description: ST0510/JAD Assignment 1 -->
 			Publication Date (yyyy-mm-dd): <input type="text"
 				name="publication_date" style="margin-bottom: 10px;"><br>
 			ISBN: <input type="text" name="ISBN" style="margin-bottom: 10px;"><br>
+			Image URL: <input type="text" name="image_url" style="margin-bottom: 10px;"><br>
 			Rating: <select name="rating" style="margin-bottom: 10px;">
 				<option value="G">G</option>
 				<option value="PG">PG</option>

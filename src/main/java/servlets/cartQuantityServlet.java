@@ -1,12 +1,14 @@
 package servlets;
+//Author: Chen Lexuan
+//Class: DIT/FT/2A/02
+//Date: 6/8/2023
+//Description: ST0510/JAD Assignment 2
+
 
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.List;
-
 import model.*;
-import dbaccess.*;
 
 import java.io.IOException;
 import javax.servlet.ServletException;
@@ -42,19 +44,17 @@ public class cartQuantityServlet extends HttpServlet {
 			String action = request.getParameter("action");
 			int id = Integer.parseInt(request.getParameter("id"));
 			ArrayList<Cart> cart_list = (ArrayList<Cart>) request.getSession().getAttribute("cart-list");
-			int quantityMax = Integer.parseInt(request.getParameter("quantityMax"));
+			int max = Integer.parseInt(request.getParameter("quantityMax"));
 			if (action != null && id >= 1) {
 				if (action.equals("inc")) {
 					for (Cart c : cart_list) {
-						if (c.getBookId() == id && c.getCartQuantity() < quantityMax) {
+						if (c.getBookId() == id && c.getCartQuantity() < max) {
 							int quantity = c.getCartQuantity();
 							quantity++;
 							c.setCartQuantity(quantity);
-							response.sendRedirect("cart.jsp");
-						} else {
-							response.sendRedirect("cart.jsp");
 						}
 					}
+					response.sendRedirect("cart.jsp");
 				}
 
 				if (action.equals("dec")) {

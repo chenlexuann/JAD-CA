@@ -91,7 +91,7 @@ try {
 											name="quantity" class="form-control"
 											value="<%=c.getCartQuantity()%>" readonly> <a
 											class="btn btn-sm btn-decre"
-											href="quantity-inc-dec?action=dec&id=<%=c.getBookId()%>"><i
+											href="quantity-inc-dec?action=dec&id=<%=c.getBookId()%>&quantityMax=<%=c.getBookQuantity()%>"><i
 											class="fas fa-minus-square"></i></a>
 									</div>
 								</form>
